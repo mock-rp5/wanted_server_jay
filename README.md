@@ -8,3 +8,4 @@
 - spring-boot 폴더에 탬플릿 적용
 - SSL 적용
 - EC2 메모리 스와핑 적용
+- ERD 설계
