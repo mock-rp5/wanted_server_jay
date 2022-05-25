@@ -97,18 +97,19 @@ public class UserProvider {
     }
 
 
-    // 해당 userIdx를 갖는 User의 정보 조회
-    public GetUserRes getUser(int userIdx) throws BaseException {
+    // 해당 userId를 갖는 User의 정보 조회
+    public GetUserRes getUser(int userId) throws BaseException {
         try {
-            GetUserRes getUserRes = userDao.getUser(userIdx);
+            GetUserRes getUserRes = userDao.getUser(userId);
             return getUserRes;
         } catch (Exception exception) {
+            System.out.println(exception.getCause());
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
     // 해당 userId를 갖는 User의 Status 조회
-    public char checkStatus(int userId) throws BaseException {
+    public String checkStatus(int userId) throws BaseException {
         try {
             return userDao.checkStatus(userId);
         } catch (Exception exception) {
