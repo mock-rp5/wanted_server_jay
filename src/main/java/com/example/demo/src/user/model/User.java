@@ -11,8 +11,8 @@ import lombok.*;
  * User 클래스는 스프링에서 사용하는 Objec이다.(내부에서 사용하기 위한 객체라고 보면 된다.)
  */
 public class User {
-    private int userIdx;
+    private long userId;
     private String email;
     private String password;
-    private String nickname;
+    private String name;
 }

@@ -108,10 +108,10 @@ public class UserController {
     // Path-variable
     @ResponseBody
     @GetMapping("{userId}") // (GET) 127.0.0.1:9000/app/users/:userId
-    public BaseResponse<GetUserRes> getUser(@PathVariable("userId") int userId) {
+    public BaseResponse<GetUserRes> getUser(@PathVariable("userId") long userId) {
         try {
             //jwt에서 id 추출.
-            int userIdByJwt = jwtService.getUserId();
+            long userIdByJwt = jwtService.getUserId();
             //userId와 접근한 유저가 같은지 확인
             if(userId != userIdByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
@@ -125,27 +125,49 @@ public class UserController {
     }
 
     /**
-     * 유저정보변경 API
-     * [PATCH] /users/:userId
+     * 유저 탈퇴 API
+     * [PATCH] /users/:userId/status
      */
     @ResponseBody
-    @PatchMapping("/{userId}")
-    public BaseResponse<String> modifyUserName(@PathVariable("userId") int userId, @RequestBody User user) {
-        try {
-
-            //*********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
+    @PatchMapping("{userId}/status")
+    public BaseResponse<String> deleteUser(@PathVariable("userId") long userId){
+        try{
             //jwt에서 idx 추출.
-            int userIdByJwt = jwtService.getUserId();
+            long userIdByJwt = jwtService.getUserId();
             //userIdx와 접근한 유저가 같은지 확인
             if(userId != userIdByJwt){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            //같다면 유저네임 변경
+            userService.deleteUser(userId);
+            String result = "유저 탈퇴 성공";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
+
+    /**
+     * 유저정보변경 API
+     * [PATCH] /users/:userId
+     */
+    @ResponseBody
+    @PatchMapping("{userId}")
+    public BaseResponse<String> modifyUser(@PathVariable("userId") int userId, @RequestBody PatchUserReq user) {
+        try {
+
+            //*********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
+            //jwt에서 idx 추출.
+            long userIdByJwt = jwtService.getUserId();
+            //userIdx와 접근한 유저가 같은지 확인
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
             //**************************************************************************
 
-            System.out.println(user.toString());
-            PatchUserReq patchUserReq = new PatchUserReq(userId, user.getNickname());
-            userService.modifyUserName(patchUserReq);
+            PatchUserReq patchUserReq = new PatchUserReq(userId, user.getName(), user.getEmail(), user.getPhone());
+            userService.modifyUser(patchUserReq);
 
             String result = "회원정보가 수정되었습니다.";
             return new BaseResponse<>(result);

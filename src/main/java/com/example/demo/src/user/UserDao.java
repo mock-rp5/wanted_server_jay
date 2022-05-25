@@ -79,20 +79,27 @@ public class UserDao {
 
     //추가
     // 유저 status 확인 (추가)
-    public String checkStatus(int userId){
+    public String checkStatus(long userId){
         String checkStatusQuery = "select status from user where user_id = ? ";
-        int checkStatusParams = userId;
+        long checkStatusParams = userId;
         return this.jdbcTemplate.queryForObject(checkStatusQuery,
                 String.class,
                 checkStatusParams);
     }
 
-    // 회원정보 변경
-    public int modifyUserName(PatchUserReq patchUserReq) {
-        String modifyUserNameQuery = "update User set name = ? where userIdx = ? "; // 해당 userIdx를 만족하는 User를 해당 nickname으로 변경한다.
-        Object[] modifyUserNameParams = new Object[]{patchUserReq.getNickname(), patchUserReq.getUserIdx()}; // 주입될 값들(nickname, userIdx) 순
+    //유저 탈퇴
+    public int deleteUser(long userId){
+        String deleteUserQuery = "update user set status = ? where user_id = ?";
+        Object[] deleteUserParams = new Object[]{"DELETE", userId};
+        return this.jdbcTemplate.update(deleteUserQuery, deleteUserParams);
+    }
 
-        return this.jdbcTemplate.update(modifyUserNameQuery, modifyUserNameParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0) 
+    // 회원정보 변경
+    public int modifyUser(PatchUserReq patchUserReq) {
+        String modifyUserQuery = "update user set name = ?, email = ?, phone = ? where user_id = ? "; // 해당 userIdx를 만족하는 User를 해당 nickname으로 변경한다.
+        Object[] modifyUserParams = new Object[]{patchUserReq.getName(), patchUserReq.getEmail() ,patchUserReq.getPhone(), patchUserReq.getUserId()}; // 주입될 값들(nickname, userIdx) 순
+
+        return this.jdbcTemplate.update(modifyUserQuery, modifyUserParams); // 대응시켜 매핑시켜 쿼리 요청(생성했으면 1, 실패했으면 0)
     }
 
 
@@ -104,7 +111,7 @@ public class UserDao {
 
         return this.jdbcTemplate.queryForObject(getPwdQuery,
                 (rs, rowNum) -> new User(
-                        rs.getInt("user_id"),
+                        rs.getLong("user_id"),
                         rs.getString("email"),
                         rs.getString("password"),
                         rs.getString("name")
@@ -118,7 +125,7 @@ public class UserDao {
         String getUsersQuery = "select * from User"; //User 테이블에 존재하는 모든 회원들의 정보를 조회하는 쿼리
         return this.jdbcTemplate.query(getUsersQuery,
                 (rs, rowNum) -> new GetUserRes(
-                        rs.getInt("userIdx"),
+                        rs.getInt("user_id"),
                         rs.getString("name"),
                         rs.getString("Email"),
                         rs.getString("password")) // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
@@ -139,9 +146,9 @@ public class UserDao {
     }
 
     // 해당 user_id를 갖는 유저조회
-    public GetUserRes getUser(int userId) {
+    public GetUserRes getUser(long userId) {
         String getUserQuery = "select * from user where user_id = ?"; // 해당 user_id를 만족하는 유저를 조회하는 쿼리문
-        int getUserParams = userId;
+        long getUserParams = userId;
         return this.jdbcTemplate.queryForObject(getUserQuery,
                 (rs, rowNum) -> new GetUserRes(
                         rs.getInt("user_id"),
