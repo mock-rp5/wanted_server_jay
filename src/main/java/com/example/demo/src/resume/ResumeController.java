@@ -41,6 +41,7 @@ public class ResumeController {
     @PostMapping("{userId}")
     public BaseResponse<PostResumeRes> createResume(@PathVariable long userId, @RequestBody Resume resume){
         try {
+            //jwt
             long userIdByJwt = jwtService.getUserId();
             if (userId != userIdByJwt)
                 return new BaseResponse<>(INVALID_USER_JWT);
@@ -60,6 +61,9 @@ public class ResumeController {
     @GetMapping("{userId}")
     public BaseResponse<List<GetResumeListRes>> getResumeList(@PathVariable long userId){
         try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
             List<GetResumeListRes> getResumeListRes = resumeService.getResumeList(userId);
             return new BaseResponse<>(getResumeListRes);
         } catch (BaseException e){

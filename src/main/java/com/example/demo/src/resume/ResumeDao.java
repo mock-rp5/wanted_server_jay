@@ -35,12 +35,12 @@ public class ResumeDao {
     }
 
     public List<GetResumeListRes> getResumeList(long userId){
-        String getResumeListQuery = "select * from resume where user_id = ?";
+        String getResumeListQuery = "select resume_id, DATE_FORMAT(updated_at, '%Y.%m.%d') as updated_at, resume_status, resume_title from resume where user_id = ?";
         return this.jdbcTemplate.query(getResumeListQuery,
                 (rs, rowNum) -> new GetResumeListRes(
                         rs.getLong("resume_id"),
                         rs.getString("updated_at"),
-                        rs.getString("status"),
+                        rs.getString("resume_status"),
                         rs.getString("resume_title")
                 ), userId);
     }
