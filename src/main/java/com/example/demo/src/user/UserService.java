@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import static com.example.demo.config.BaseResponseStatus.*;
+import static com.example.demo.config.BaseResponseStatus.MODIFY_FAIL_USERIMG;
 
 /**
  * Service란?
@@ -91,6 +92,19 @@ public class UserService {
                 throw new BaseException(MODIFY_FAIL_USER);
             }
         } catch (Exception exception) { // DB에 이상이 있는 경우 에러 메시지를 보냅니다.
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    // 유저 이미지 변경(Patch)
+    public void modifyUserImg(PatchUserImgReq patchUserImgReq) throws  BaseException {
+        try {
+            int result = userDao.modifyUserImg(patchUserImgReq);
+            if (result == 0){
+                throw new BaseException(MODIFY_FAIL_USERIMG);
+            }
+        } catch (Exception e){
+            System.out.println(e.getCause());
             throw new BaseException(DATABASE_ERROR);
         }
     }

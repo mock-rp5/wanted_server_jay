@@ -177,59 +177,59 @@ public class UserController {
         }
     }
 
-//    /**
-//     *  [추가 6]
-//     *  유저 이미지 변경 API
-//     *  [PATCH] /users/:userId/image
-//     */
-//    @ResponseBody
-//    @PatchMapping("/{userId}/image")
-//    public BaseResponse<String> modifyUserImage(@PathVariable("userId") int userId, @RequestBody User user){
-//        try {
-//            //*********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
-//            //jwt에서 idx 추출.
-//            int userIdByJwt = jwtService.getUserId();
-//            //userIdx와 접근한 유저가 같은지 확인
-//            if(userId != userIdByJwt){
-//                return new BaseResponse<>(INVALID_USER_JWT);
-//            }
-//            //같다면 유저네임 변경
-//            //**************************************************************************
-//            PatchUserImgReq patchUserImgReq = new PatchUserImgReq(userId, user.getImageUrl());
-//            userService.modifyUserImg(patchUserImgReq);
-//
-//            String result = "회원 이미지가 수정되었습니다.";
-//            return new BaseResponse<>(result);
-//        } catch (BaseException e){
-//            return new BaseResponse<>(e.getStatus());
-//        }
-//    }
-//
-//    /**
-//     *  [추가 7]
-//     *  유저 이미지 삭제 API
-//     *  [PATCH] /users/:userId/image
-//     */
-//    @ResponseBody
-//    @PatchMapping("/{userId}/image/status")
-//    public BaseResponse<String> deleteUserImage(@PathVariable("userId") int userId){
-//        try {
-//            //*********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
-//            //jwt에서 idx 추출.
-//            int userIdByJwt = jwtService.getUserId();
-//            //userIdx와 접근한 유저가 같은지 확인
-//            if(userId != userIdByJwt){
-//                return new BaseResponse<>(INVALID_USER_JWT);
-//            }
-//            //같다면 유저네임 변경
-//            //**************************************************************************
-//            PatchUserImgReq patchUserImgReq = new PatchUserImgReq(userId, null);
-//            userService.modifyUserImg(patchUserImgReq);
-//
-//            String result = "회원 이미지가 삭제되었습니다.";
-//            return new BaseResponse<>(result);
-//        } catch (BaseException e){
-//            return new BaseResponse<>(e.getStatus());
-//        }
-//    }
+    /**
+     *  [추가 6]
+     *  유저 이미지 변경 API
+     *  [PATCH] /users/:userId/image
+     */
+    @ResponseBody
+    @PatchMapping("/{userId}/image")
+    public BaseResponse<String> modifyUserImage(@PathVariable("userId") int userId, @RequestBody PatchUserImgReq user){
+        try {
+            //*********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
+            //jwt에서 idx 추출.
+            long userIdByJwt = jwtService.getUserId();
+            //userIdx와 접근한 유저가 같은지 확인
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            //같다면 유저네임 변경
+            //**************************************************************************
+            PatchUserImgReq patchUserImgReq = new PatchUserImgReq(userId, user.getImageUrl());
+            userService.modifyUserImg(patchUserImgReq);
+
+            String result = "회원 이미지가 수정되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     *  [추가 7]
+     *  유저 이미지 삭제 API
+     *  [PATCH] /users/:userId/image
+     */
+    @ResponseBody
+    @PatchMapping("/{userId}/image/status")
+    public BaseResponse<String> deleteUserImage(@PathVariable("userId") int userId){
+        try {
+            //*********** 해당 부분은 7주차 - JWT 수업 후 주석해체 해주세요!  ****************
+            //jwt에서 idx 추출.
+            long userIdByJwt = jwtService.getUserId();
+            //userIdx와 접근한 유저가 같은지 확인
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            //같다면 유저네임 변경
+            //**************************************************************************
+            PatchUserImgReq patchUserImgReq = new PatchUserImgReq(userId, null);
+            userService.modifyUserImg(patchUserImgReq);
+
+            String result = "회원 이미지가 삭제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

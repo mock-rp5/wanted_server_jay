@@ -4,6 +4,7 @@ import lombok.*;
 
 @Getter // 해당 클래스에 대한 접근자 생성
 @Setter // 해당 클래스에 대한 설정자 생성
+@NoArgsConstructor
 @AllArgsConstructor // 해당 클래스의 모든 멤버 변수(userIdx, nickname, email, password)를 받는 생성자를 생성
 /**
  * 유저관련된 정보들을 담고 있는 클래스(유저 관련정보를 추출할 때 해당 클래스에서 Getter를 사용해서 가져온다.)
