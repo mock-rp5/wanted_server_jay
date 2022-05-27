@@ -2,6 +2,7 @@ package com.example.demo.src.resume;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.resume.model.GetResumeListRes;
+import com.example.demo.src.resume.model.PatchResumeReq;
 import com.example.demo.src.resume.model.PostResumeReq;
 import com.example.demo.src.resume.model.PostResumeRes;
 import org.slf4j.Logger;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
 @Transactional
@@ -44,6 +45,42 @@ public class ResumeService {
             List<GetResumeListRes> getResumeListRes = resumeDao.getResumeList(userId);
             return getResumeListRes;
         } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 임시저장
+    public void modifyResume(PatchResumeReq patchResumeReq) throws BaseException{
+        try {
+            int result = resumeDao.modifyResume(patchResumeReq);
+            if (result == 0){
+                throw new BaseException(MODIFY_FAIL_RESUME);
+            }
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 작성완료
+    public void completeResume(PatchResumeReq patchResumeReq) throws BaseException{
+        try {
+            int result = resumeDao.completeResume(patchResumeReq);
+            if (result == 0){
+                throw new BaseException(COMPLETE_FAIL_RESUME);
+            }
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 삭제
+    public void deleteResume(long resumeId) throws BaseException{
+        try {
+            int result = resumeDao.deleteResume(resumeId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_RESUME);
+            }
+        } catch (Exception e){
             throw new BaseException(DATABASE_ERROR);
         }
     }
