@@ -1,10 +1,7 @@
 package com.example.demo.src.resume;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.resume.model.GetResumeListRes;
-import com.example.demo.src.resume.model.PatchResumeReq;
-import com.example.demo.src.resume.model.PostResumeReq;
-import com.example.demo.src.resume.model.PostResumeRes;
+import com.example.demo.src.resume.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +76,41 @@ public class ResumeService {
             int result = resumeDao.deleteResume(resumeId);
             if (result == 0){
                 throw new BaseException(DELETE_FAIL_RESUME);
+            }
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 경력 추가
+    public PostCareerRes createCareer(long resumeId) throws BaseException{
+        try {
+            long careerId = resumeDao.createCareer(resumeId);
+            return new PostCareerRes(careerId);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 경력 수정
+    public void modifyCareer(PatchCareerReq patchCareerReq) throws BaseException{
+        try {
+            int result = resumeDao.modifyCareer(patchCareerReq);
+            if (result == 0)
+                throw new BaseException(MODIFY_FAIL_CAREER);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 경력 삭제
+    public void deleteCareer(long resumeId, long careerId) throws BaseException{
+        try {
+            int result = resumeDao.deleteCareer(resumeId, careerId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_CAREER);
             }
         } catch (Exception e){
             throw new BaseException(DATABASE_ERROR);

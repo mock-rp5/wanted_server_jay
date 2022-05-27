@@ -143,4 +143,72 @@ public class ResumeController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /**
+     * 이력서 경력 추가 API
+     * [Post] /{resumeId}/{userId}/career
+     */
+    @ResponseBody
+    @PostMapping("{resumeId}/{userId}/career")
+    public BaseResponse<PostCareerRes> createCareer(@PathVariable long resumeId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            PostCareerRes postCareerRes = resumeService.createCareer(resumeId);
+            return new BaseResponse<>(postCareerRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 이력서 경력 수정 API
+     * [Patch] /{resumeId}/{userId}/career/{careerId}
+     */
+    @ResponseBody
+    @PatchMapping("{resumeId}/{userId}/career/{careerId}")
+    public BaseResponse<String> modifyCareer(@PathVariable long resumeId, @PathVariable long userId, @PathVariable long careerId,@RequestBody PatchCareerReq career){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            PatchCareerReq patchCareerReq = new PatchCareerReq(
+                    resumeId,
+                    careerId,
+                    career.getStartAt(),
+                    career.getEndAt(),
+                    career.getCompanyName(),
+                    career.getDepartPosition(),
+                    career.getTenure(),
+                    career.getNow()
+            );
+            resumeService.modifyCareer(patchCareerReq);
+
+            String result = "경력이 수정되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+    /**
+     * 이력서 경력 삭제 API
+     * [Delete] /{resumeId}/{userId}/career/{careerId}
+     */
+    @ResponseBody
+    @DeleteMapping("{resumeId}/{userId}/career/{careerId}")
+    public BaseResponse<String> deleteCareer(@PathVariable long resumeId, @PathVariable long userId, @PathVariable long careerId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            resumeService.deleteCareer(resumeId, careerId);
+
+            String result = "경력이 삭제 되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 }

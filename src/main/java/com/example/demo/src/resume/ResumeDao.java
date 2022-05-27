@@ -1,6 +1,7 @@
 package com.example.demo.src.resume;
 
 import com.example.demo.src.resume.model.GetResumeListRes;
+import com.example.demo.src.resume.model.PatchCareerReq;
 import com.example.demo.src.resume.model.PatchResumeReq;
 import com.example.demo.src.resume.model.PostResumeReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,5 +84,35 @@ public class ResumeDao {
         String deleteResumeQuery = "update resume set status = ? where resume_id = ?";
         Object[] deleteResumeParams = new Object[]{"DELETE", resumeId};
         return this.jdbcTemplate.update(deleteResumeQuery, deleteResumeParams);
+    }
+
+    //이력서 경력 추가
+    public long createCareer(long resumeId){
+        String createCareerQuery = "insert into career (resume_id) values (?)";
+        this.jdbcTemplate.update(createCareerQuery, resumeId);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, long.class);
+    }
+
+    //이력서 경력 수정
+    public int modifyCareer(PatchCareerReq patchCareerReq){
+        String modifyCareerQuery = "update career set start_at = ?, end_at = ?, company_name = ?, depart_position = ?, tenure = ?, now = ? where career_id = ?";
+        Object[] modifyCareerParams = new Object[]{
+                patchCareerReq.getStartAt(),
+                patchCareerReq.getEndAt(),
+                patchCareerReq.getCompanyName(),
+                patchCareerReq.getDepartPosition(),
+                patchCareerReq.getTenure(),
+                patchCareerReq.getNow(),
+                patchCareerReq.getCareerId()
+        };
+        return this.jdbcTemplate.update(modifyCareerQuery,modifyCareerParams);
+    }
+
+    //이력서 경력 삭제
+    public int deleteCareer(long resumeId, long careerId){
+        String deleteCareerQuery = "delete from career where career_id = ? ";
+        return this.jdbcTemplate.update(deleteCareerQuery, careerId);
     }
 }
