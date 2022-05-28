@@ -213,4 +213,127 @@ public class ResumeDao {
         String deleteEducationQuery = "delete from education where education_id = ? ";
         return this.jdbcTemplate.update(deleteEducationQuery, educationId);
     }
+
+    /**수상및 기타**/
+
+    //학력 리스트 조회
+    public List<GetEtcListRes> getEtcList(long resumeId){
+        String getEtcListQuery = "select * from etc where resume_id = ? order by etc_id desc";
+        return this.jdbcTemplate.query(getEtcListQuery,
+                (rs, rowNum) -> new GetEtcListRes(
+                        rs.getLong("etc_id"),
+                        rs.getString("date"),
+                        rs.getString("name"),
+                        rs.getString("detail")
+                ), resumeId);
+    }
+
+    //이력서 학력 추가
+    public long createEtc(long resumeId){
+        String createEtcQuery = "insert into etc (resume_id) values (?)";
+        this.jdbcTemplate.update(createEtcQuery, resumeId);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, long.class);
+    }
+
+    //이력서 학력 수정
+    public int modifyEtc(PatchEtcReq patchEtcReq){
+        String modifyEtcQuery = "update etc set date = ?, name = ?, detail = ? where etc_id = ?";
+        Object[] modifyEtcParams = new Object[]{
+                patchEtcReq.getDate(),
+                patchEtcReq.getName(),
+                patchEtcReq.getDetail(),
+                patchEtcReq.getEtcId()
+        };
+        return this.jdbcTemplate.update(modifyEtcQuery,modifyEtcParams);
+    }
+
+    //이력서 학력 삭제
+    public int deleteEtc(long resumeId, long etcId){
+        String deleteEtcQuery = "delete from etc where etc_id = ? ";
+        return this.jdbcTemplate.update(deleteEtcQuery, etcId);
+    }
+
+    /** 외국어 **/
+
+    //외국어 리스트 조회
+    public List<GetLanguageListRes> getLanguageList(long resumeId){
+        String getLanguageListQuery = "select * from language where resume_id = ? order by language_id desc";
+        return this.jdbcTemplate.query(getLanguageListQuery,
+                (rs, rowNum) -> new GetLanguageListRes(
+                        rs.getLong("language_id"),
+                        rs.getString("language"),
+                        rs.getString("test_name"),
+                        rs.getString("score"),
+                        rs.getString("test_at")
+                ), resumeId);
+    }
+
+    //이력서 외국어 추가
+    public long createLanguage(long resumeId){
+        String createLanguageQuery = "insert into language (resume_id) values (?)";
+        this.jdbcTemplate.update(createLanguageQuery, resumeId);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, long.class);
+    }
+
+    //이력서 외국어 수정
+    public int modifyLanguage(PatchLanguageReq patchLanguageReq){
+        String modifyLanguageQuery = "update language set language = ?, test_name = ?, score = ?, test_at = ? where language_id = ?";
+        Object[] modifyLanguageParams = new Object[]{
+                patchLanguageReq.getLanguage(),
+                patchLanguageReq.getTestName(),
+                patchLanguageReq.getScore(),
+                patchLanguageReq.getTestAt(),
+                patchLanguageReq.getLanguageId()
+        };
+        return this.jdbcTemplate.update(modifyLanguageQuery,modifyLanguageParams);
+    }
+
+    //이력서 외국어 삭제
+    public int deleteLanguage(long resumeId, long languageId){
+        String deleteLanguageQuery = "delete from language where language_id = ? ";
+        return this.jdbcTemplate.update(deleteLanguageQuery, languageId);
+    }
+
+    /** 링크 **/
+
+    //링크 리스트 조회
+    public List<GetLinkListRes> getLinkList(long resumeId){
+        String getLinkListQuery = "select * from link where resume_id = ? order by link_id desc";
+        return this.jdbcTemplate.query(getLinkListQuery,
+                (rs, rowNum) -> new GetLinkListRes(
+                        rs.getLong("link_id"),
+                        rs.getString("link")
+                ), resumeId);
+    }
+
+    //이력서 링크 추가
+    public long createLink(long resumeId){
+        String createLinkQuery = "insert into link (resume_id) values (?)";
+        this.jdbcTemplate.update(createLinkQuery, resumeId);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, long.class);
+    }
+
+    //이력서 링크 수정
+    public int modifyLink(PatchLinkReq patchLinkReq){
+        String modifyLinkQuery = "update link set link = ? where link_id = ?";
+        Object[] modifyLinkParams = new Object[]{
+                patchLinkReq.getLink(),
+                patchLinkReq.getLinkId()
+        };
+        return this.jdbcTemplate.update(modifyLinkQuery,modifyLinkParams);
+    }
+
+    //이력서 링크 삭제
+    public int deleteLink(long resumeId, long linkId){
+        String deleteLinkQuery = "delete from link where link_id = ? ";
+        return this.jdbcTemplate.update(deleteLinkQuery, linkId);
+    }
+
+
 }

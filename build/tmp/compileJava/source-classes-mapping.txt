@@ -42,25 +42,57 @@ com/example/demo/src/user/model/GetUserRes.java
  com.example.demo.src.user.model.GetUserRes
 com/example/demo/src/user/model/User.java
  com.example.demo.src.user.model.User
+com/example/demo/src/resume/model/PatchCareerReq.java
+ com.example.demo.src.resume.model.PatchCareerReq
+com/example/demo/src/resume/model/GetCareerListRes.java
+ com.example.demo.src.resume.model.GetCareerListRes
+com/example/demo/src/resume/model/GetResultListRes.java
+ com.example.demo.src.resume.model.GetResultListRes
+com/example/demo/src/resume/model/PostResultRes.java
+ com.example.demo.src.resume.model.PostResultRes
+com/example/demo/src/resume/model/PatchResultReq.java
+ com.example.demo.src.resume.model.PatchResultReq
+com/example/demo/src/resume/model/PostEducationRes.java
+ com.example.demo.src.resume.model.PostEducationRes
+com/example/demo/src/resume/model/PatchEducationReq.java
+ com.example.demo.src.resume.model.PatchEducationReq
+com/example/demo/src/resume/model/GetEducationListRes.java
+ com.example.demo.src.resume.model.GetEducationListRes
+com/example/demo/src/resume/model/GetEtcListRes.java
+ com.example.demo.src.resume.model.GetEtcListRes
+com/example/demo/src/resume/model/PostEtcRes.java
+ com.example.demo.src.resume.model.PostEtcRes
+com/example/demo/src/resume/model/PatchEtcReq.java
+ com.example.demo.src.resume.model.PatchEtcReq
+com/example/demo/src/resume/model/GetLanguageListRes.java
+ com.example.demo.src.resume.model.GetLanguageListRes
+com/example/demo/src/resume/model/PostLanguageRes.java
+ com.example.demo.src.resume.model.PostLanguageRes
+com/example/demo/src/resume/model/PatchLanguageReq.java
+ com.example.demo.src.resume.model.PatchLanguageReq
+com/example/demo/src/user/UserController.java
+ com.example.demo.src.user.UserController
 com/example/demo/config/BaseResponse.java
  com.example.demo.config.BaseResponse
+com/example/demo/src/resume/model/GetLinkListRes.java
+ com.example.demo.src.resume.model.GetLinkListRes
 com/example/demo/src/user/UserService.java
  com.example.demo.src.user.UserService
 com/example/demo/config/BaseResponseStatus.java
  com.example.demo.config.BaseResponseStatus
 com/example/demo/src/user/UserProvider.java
  com.example.demo.src.user.UserProvider
-com/example/demo/src/user/UserController.java
- com.example.demo.src.user.UserController
+com/example/demo/src/resume/ResumeDao.java
+ com.example.demo.src.resume.ResumeDao
 com/example/demo/config/BaseException.java
  com.example.demo.config.BaseException
 com/example/demo/utils/JwtService.java
  com.example.demo.utils.JwtService
-com/example/demo/src/resume/model/PatchCareerReq.java
- com.example.demo.src.resume.model.PatchCareerReq
-com/example/demo/src/resume/ResumeController.java
- com.example.demo.src.resume.ResumeController
-com/example/demo/src/resume/ResumeDao.java
- com.example.demo.src.resume.ResumeDao
+com/example/demo/src/resume/model/PostLinkRes.java
+ com.example.demo.src.resume.model.PostLinkRes
 com/example/demo/src/resume/ResumeService.java
  com.example.demo.src.resume.ResumeService
+com/example/demo/src/resume/model/PatchLinkReq.java
+ com.example.demo.src.resume.model.PatchLinkReq
+com/example/demo/src/resume/ResumeController.java
+ com.example.demo.src.resume.ResumeController

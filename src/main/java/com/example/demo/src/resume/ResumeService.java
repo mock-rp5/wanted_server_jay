@@ -218,4 +218,145 @@ public class ResumeService {
         }
     }
 
+    /**수상및 기타 **/
+    //이력서 수상 및 기타 리스트 조회
+    public List<GetEtcListRes> getEtcList(long resumeId) throws BaseException{
+        try {
+            List<GetEtcListRes> getEtcListRes = resumeDao.getEtcList(resumeId);
+            return getEtcListRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 수상 및 기타 추가
+    public PostEtcRes createEtc(long resumeId) throws BaseException{
+        try {
+            long educationId = resumeDao.createEtc(resumeId);
+            return new PostEtcRes(educationId);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 수상 및 기타 수정
+    public void modifyEtc(PatchEtcReq patchEtcReq) throws BaseException{
+        try {
+            int result = resumeDao.modifyEtc(patchEtcReq);
+            if (result == 0)
+                throw new BaseException(MODIFY_FAIL_ETC);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 수상 및 기타 삭제
+    public void deleteEtc(long resumeId, long etcId) throws BaseException{
+        try {
+            int result = resumeDao.deleteEtc(resumeId, etcId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_ETC);
+            }
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    /** 외국어 **/
+
+    //이력서 외국어 리스트 조회
+    public List<GetLanguageListRes> getLanguageList(long resumeId) throws BaseException{
+        try {
+            List<GetLanguageListRes> getLanguageListRes = resumeDao.getLanguageList(resumeId);
+            return getLanguageListRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 외국어 추가
+    public PostLanguageRes createLanguage(long resumeId) throws BaseException{
+        try {
+            long educationId = resumeDao.createLanguage(resumeId);
+            return new PostLanguageRes(educationId);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 외국어 수정
+    public void modifyLanguage(PatchLanguageReq patchLanguageReq) throws BaseException{
+        try {
+            int result = resumeDao.modifyLanguage(patchLanguageReq);
+            if (result == 0)
+                throw new BaseException(MODIFY_FAIL_LANGUAGE);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 외국어 삭제
+    public void deleteLanguage(long resumeId, long languageId) throws BaseException{
+        try {
+            int result = resumeDao.deleteLanguage(resumeId, languageId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_LANGUAGE);
+            }
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    /** 링크 **/
+
+    //링크 리스트 조회
+    public List<GetLinkListRes> getLinkList(long resumeId) throws BaseException{
+        try {
+            List<GetLinkListRes> getLinkListRes = resumeDao.getLinkList(resumeId);
+            return getLinkListRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //링크 추가
+    public PostLinkRes createLink(long resumeId) throws BaseException{
+        try {
+            long educationId = resumeDao.createLink(resumeId);
+            return new PostLinkRes(educationId);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //링크 수정
+    public void modifyLink(PatchLinkReq patchLinkReq) throws BaseException{
+        try {
+            int result = resumeDao.modifyLink(patchLinkReq);
+            if (result == 0)
+                throw new BaseException(MODIFY_FAIL_LINK);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //링크 삭제
+    public void deleteLink(long resumeId, long linkId) throws BaseException{
+        try {
+            int result = resumeDao.deleteLink(resumeId, linkId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_LINK);
+            }
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
 }
