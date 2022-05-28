@@ -116,4 +116,106 @@ public class ResumeService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    //이력서 경력 리스트 조회
+    public List<GetCareerListRes> getCareerList(long resumeId) throws BaseException{
+        try {
+            List<GetCareerListRes> getCareerListRes = resumeDao.getCareerList(resumeId);
+            return getCareerListRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //경력 성과 리스트 조회
+    public List<GetResultListRes> getResultList(long careerId) throws BaseException{
+        try {
+            List<GetResultListRes> getCareerListRes = resumeDao.getResultList(careerId);
+            return getCareerListRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //경력 성과 추가
+    public PostResultRes createResult(long careerId) throws BaseException{
+        try {
+            long resultId = resumeDao.createResult(careerId);
+            return new PostResultRes(resultId);
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //경력 성과 수정
+    public void modifyResult(PatchResultReq patchResultReq) throws BaseException{
+        try {
+            int result = resumeDao.modifyResult(patchResultReq);
+            if (result == 0)
+                throw new BaseException(MODIFY_FAIL_RESULT);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //성과 삭제
+    public void deleteResult(long resultId) throws BaseException{
+        try {
+            int result = resumeDao.deleteResult(resultId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_RESULT);
+            }
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 학력
+
+    //이력서 학력 리스트 조회
+    public List<GetEducationListRes> getEducationList(long resumeId) throws BaseException{
+        try {
+            List<GetEducationListRes> getEducationListRes = resumeDao.getEducationList(resumeId);
+            return getEducationListRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 학력 추가
+    public PostEducationRes createEducation(long resumeId) throws BaseException{
+        try {
+            long educationId = resumeDao.createEducation(resumeId);
+            return new PostEducationRes(educationId);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 학력 수정
+    public void modifyEducation(PatchEducationReq patchEducationReq) throws BaseException{
+        try {
+            int result = resumeDao.modifyEducation(patchEducationReq);
+            if (result == 0)
+                throw new BaseException(MODIFY_FAIL_EDUCATION);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 학력 삭제
+    public void deleteEducation(long resumeId, long educationId) throws BaseException{
+        try {
+            int result = resumeDao.deleteEducation(resumeId, educationId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_EDUCATION);
+            }
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

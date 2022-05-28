@@ -211,4 +211,189 @@ public class ResumeController {
         }
     }
 
+    /**
+     * 이력서 경력 조회 API
+     * [Get] /{resumeId}/{userId}/career
+     */
+    @ResponseBody
+    @GetMapping("{resumeId}/{userId}/career")
+    public BaseResponse<List<GetCareerListRes>> getCareerList(@PathVariable long resumeId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            List<GetCareerListRes> getCareerListRes = resumeService.getCareerList(resumeId);
+            return new BaseResponse<>(getCareerListRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 경력 주요 성과 조회 API
+     * [Get /{userId}/career/{careerId}
+     */
+    @ResponseBody
+    @GetMapping("{userId}/career/{careerId}")
+    public BaseResponse<List<GetResultListRes>> getResultList(@PathVariable long userId, @PathVariable long careerId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            List<GetResultListRes> getResultListRes = resumeService.getResultList(careerId);
+            return new BaseResponse<>(getResultListRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 경력 주요 성과 추가 API
+     * [Post] /{userId}/career/{careerId}
+     */
+    @ResponseBody
+    @PostMapping("{userId}/career/{careerId}")
+    public BaseResponse<PostResultRes> createResult(@PathVariable long userId, @PathVariable long careerId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            PostResultRes postResultRes = resumeService.createResult(careerId);
+            return new BaseResponse<>(postResultRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 경력 주요 성과 수정 API
+     * [Patch] /{userId}/result/{resultId}
+     */
+    @ResponseBody
+    @PatchMapping("{userId}/result/{resultId}")
+    public BaseResponse<String> modifyResult(@PathVariable long userId, @PathVariable long resultId,@RequestBody PatchResultReq result){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            PatchResultReq patchResultReq = new PatchResultReq(
+                    resultId,
+                    result.getStartAt(),
+                    result.getEndAt(),
+                    result.getResult()
+            );
+            resumeService.modifyResult(patchResultReq);
+            String resultMsg = "성과가 수정되었습니다.";
+            return new BaseResponse<>(resultMsg);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 경력 주요 성과 삭제 API
+     * [Delete] /{userId}/result/{resultId}
+     */
+    @ResponseBody
+    @DeleteMapping("{userId}/result/{resultId}")
+    public BaseResponse<String> deleteResult(@PathVariable long userId, @PathVariable long resultId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            resumeService.deleteResult(resultId);
+
+            String result = "성과가 삭제 되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**이력서 학력**/
+
+    /**
+     * 이력서 학력 조회 API
+     * [Get] /{resumeId}/{userId}/education
+     */
+    @ResponseBody
+    @GetMapping("{resumeId}/{userId}/education")
+    public BaseResponse<List<GetEducationListRes>> getEducationList(@PathVariable long resumeId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            List<GetEducationListRes> getEducationListRes = resumeService.getEducationList(resumeId);
+            return new BaseResponse<>(getEducationListRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 이력서 학력 추가 API
+     * [Post] /{resumeId}/{userId}/education
+     */
+    @ResponseBody
+    @PostMapping("{resumeId}/{userId}/education")
+    public BaseResponse<PostEducationRes> createEducation(@PathVariable long resumeId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            PostEducationRes postEducationRes = resumeService.createEducation(resumeId);
+            return new BaseResponse<>(postEducationRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 이력서 학력 수정 API
+     * [Patch] /{resumeId}/{userId}/education/{educationId}
+     */
+    @ResponseBody
+    @PatchMapping("{resumeId}/{userId}/education/{educationId}")
+    public BaseResponse<String> modifyEducation(@PathVariable long resumeId, @PathVariable long userId, @PathVariable long educationId,@RequestBody PatchEducationReq education){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            PatchEducationReq patchEducationReq = new PatchEducationReq(
+                    educationId,
+                    education.getStartAt(),
+                    education.getEndAt(),
+                    education.getNow(),
+                    education.getName(),
+                    education.getMajor(),
+                    education.getInfo()
+            );
+            resumeService.modifyEducation(patchEducationReq);
+
+            String result = "학력이 수정되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+    /**
+     * 이력서 학력 삭제 API
+     * [Delete] /{resumeId}/{userId}/education/{educationId}
+     */
+    @ResponseBody
+    @DeleteMapping("{resumeId}/{userId}/education/{educationId}")
+    public BaseResponse<String> delete(@PathVariable long resumeId, @PathVariable long userId, @PathVariable long educationId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            resumeService.deleteEducation(resumeId, educationId);
+
+            String result = "학력이 삭제 되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 }

@@ -62,6 +62,10 @@ public enum BaseResponseStatus {
     DELETE_FAIL_RESUME(false, 4019, "이력서 삭제 실패"),
     MODIFY_FAIL_CAREER(false, 4020, "이력서 경력 수정 실패"),
     DELETE_FAIL_CAREER(false, 4021, "이력서 경력 삭제 실패"),
+    MODIFY_FAIL_RESULT(false, 4022, "주요 성과 수정 실패"),
+    DELETE_FAIL_RESULT(false, 4023, "주요 성과 삭제 실패"),
+    MODIFY_FAIL_EDUCATION(false, 4024, "학력 수정 실패"),
+    DELETE_FAIL_EDUCATION(false, 4025, "학력 삭제 실패"),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");

@@ -1,15 +1,13 @@
 package com.example.demo.src.resume;
 
-import com.example.demo.src.resume.model.GetResumeListRes;
-import com.example.demo.src.resume.model.PatchCareerReq;
-import com.example.demo.src.resume.model.PatchResumeReq;
-import com.example.demo.src.resume.model.PostResumeReq;
+import com.example.demo.src.resume.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Locale;
 
 @Repository
 public class ResumeDao {
@@ -114,5 +112,105 @@ public class ResumeDao {
     public int deleteCareer(long resumeId, long careerId){
         String deleteCareerQuery = "delete from career where career_id = ? ";
         return this.jdbcTemplate.update(deleteCareerQuery, careerId);
+    }
+
+    //경력 리스트 조회
+    public List<GetCareerListRes> getCareerList(long resumeId){
+        String getCareerListQuery = "select * from career where resume_id = ? order by career_id desc";
+        return this.jdbcTemplate.query(getCareerListQuery,
+                (rs, rowNum) -> new GetCareerListRes(
+                        rs.getLong("career_id"),
+                        rs.getString("start_at"),
+                        rs.getString("end_at"),
+                        rs.getString("company_name"),
+                        rs.getString("depart_position"),
+                        rs.getString("tenure"),
+                        rs.getString("now")
+                        ), resumeId);
+    }
+    //경력 성과 리스트 조회
+    public List<GetResultListRes> getResultList(long careerId){
+        String getResultListQuery = "select * from result where career_id = ? order by result_id desc";
+        return this.jdbcTemplate.query(getResultListQuery,
+                (rs, rowNum) -> new GetResultListRes(
+                        rs.getLong("result_id"),
+                        rs.getString("start_at"),
+                        rs.getString("end_at"),
+                        rs.getString("result")
+                ), careerId);
+    }
+
+    //경력 성과 추가
+    public long createResult(long careerId){
+        String createResultQuery = "insert into result (career_id) values(?)";
+        this.jdbcTemplate.update(createResultQuery, careerId);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, long.class);
+    }
+
+    //주요 성과 수정
+    public int modifyResult(PatchResultReq patchResultReq){
+        String modifyResultQuery = "update result set start_at = ?, end_at = ?, result = ? where result_id = ?";
+        Object[] modifyResultParams = new Object[]{
+                patchResultReq.getStartAt(),
+                patchResultReq.getEndAt(),
+                patchResultReq.getResult(),
+                patchResultReq.getResultId()
+        };
+        return this.jdbcTemplate.update(modifyResultQuery,modifyResultParams);
+    }
+
+    //주요 성과 삭제
+    public int deleteResult(long resultId){
+        String deleteResultQuery = "delete from result where result_id = ? ";
+        return this.jdbcTemplate.update(deleteResultQuery, resultId);
+    }
+
+    //학력
+
+    //학력 리스트 조회
+    public List<GetEducationListRes> getEducationList(long resumeId){
+        String getEducationListQuery = "select * from education where resume_id = ? order by education_id desc";
+        return this.jdbcTemplate.query(getEducationListQuery,
+                (rs, rowNum) -> new GetEducationListRes(
+                        rs.getLong("education_id"),
+                        rs.getString("start_at"),
+                        rs.getString("end_at"),
+                        rs.getString("now"),
+                        rs.getString("name"),
+                        rs.getString("major"),
+                        rs.getString("info")
+                ), resumeId);
+    }
+
+    //이력서 학력 추가
+    public long createEducation(long resumeId){
+        String createEducationQuery = "insert into education (resume_id) values (?)";
+        this.jdbcTemplate.update(createEducationQuery, resumeId);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, long.class);
+    }
+
+    //이력서 학력 수정
+    public int modifyEducation(PatchEducationReq patchEducationReq){
+        String modifyEducationQuery = "update education set start_at = ?, end_at = ?, now = ?, name = ?, major = ?, info = ? where education_id = ?";
+        Object[] modifyEducationParams = new Object[]{
+                patchEducationReq.getStartAt(),
+                patchEducationReq.getEndAt(),
+                patchEducationReq.getNow(),
+                patchEducationReq.getName(),
+                patchEducationReq.getMajor(),
+                patchEducationReq.getInfo(),
+                patchEducationReq.getEducationId()
+        };
+        return this.jdbcTemplate.update(modifyEducationQuery,modifyEducationParams);
+    }
+
+    //이력서 학력 삭제
+    public int deleteEducation(long resumeId, long educationId){
+        String deleteEducationQuery = "delete from education where education_id = ? ";
+        return this.jdbcTemplate.update(deleteEducationQuery, educationId);
     }
 }

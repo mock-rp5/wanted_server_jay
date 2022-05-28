@@ -1,0 +1,15 @@
+package com.example.demo.src.resume.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+public class GetResultListRes {
+    private long resultId;
+    private String startAt;
+    private String endAt;
+    private String result;
+}
