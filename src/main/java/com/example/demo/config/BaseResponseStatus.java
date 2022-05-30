@@ -72,6 +72,7 @@ public enum BaseResponseStatus {
     DELETE_FAIL_LANGUAGE(false, 4029, "외국어 삭제 실패"),
     MODIFY_FAIL_LINK(false, 4030, "링크 수정 실패"),
     DELETE_FAIL_LINK(false, 4031, "링크 삭제 실패"),
+    DELETE_FAIL_RESUME_SKILL(false, 4032, "이력서 스킬 삭제 실패"),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");

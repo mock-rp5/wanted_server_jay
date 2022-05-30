@@ -47,6 +47,20 @@ public class ResumeDao {
                 ), userId);
     }
 
+    //이력서 기본 조회
+    public GetResumeBasicRes getResumeBasic(long resumeId, long userId){
+        String getResumeBasicQuery = "select * from resume where resume_id = ?";
+        return this.jdbcTemplate.queryForObject(getResumeBasicQuery,
+                (rs, rowNum) -> new GetResumeBasicRes(
+                        rs.getLong("resume_id"),
+                        rs.getString("introduce"),
+                        rs.getString("resume_title"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("phone")
+                ), resumeId);
+    }
+
     //이력서 임시저장
     public int modifyResume(PatchResumeReq patchResumeReq){
         String modifyResumeQuery = "update resume set introduce = ?, resume_title = ?, name = ?, email = ?, phone = ?, resume_status = ? where resume_id = ?";
@@ -335,5 +349,37 @@ public class ResumeDao {
         return this.jdbcTemplate.update(deleteLinkQuery, linkId);
     }
 
+    /** 이력서 스킬 **/
 
+    //스킬 리스트 조회
+    public List<GetResumeSkillListRes> getResumeSkillList(long resumeId){
+        String getResumeSkillListQuery = "select resume_id, s.skill_id, s.skill_name " +
+                "from skill_resume_relation as sr " +
+                "inner join skill as s " +
+                "on s.skill_id = sr.skill_id " +
+                "where resume_id = ?";
+        return this.jdbcTemplate.query(getResumeSkillListQuery,
+                (rs, rowNum) -> new GetResumeSkillListRes(
+                        rs.getLong("resume_id"),
+                        rs.getLong("skill_id"),
+                        rs.getString("skill_name")
+                ), resumeId);
+    }
+
+    //이력서 스킬 추가
+    public long createResumeSkill(long resumeId, long skillId){
+        String createResumeSkillQuery = "insert into skill_resume_relation (resume_id, skill_id) values (?, ?)";
+        Object[] createResumeSkillParams = new Object[]{resumeId, skillId};
+        this.jdbcTemplate.update(createResumeSkillQuery, createResumeSkillParams);
+
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, long.class);
+    }
+
+    //이력서 스킬 삭제
+    public int deleteResumeSkill(long resumeId, long skillId) {
+        String deleteResumeSkillQuery = "delete from skill_resume_relation where skill_id = ? and resume_id = ? ";
+        Object[] deleteResumeSkillParams = new Object[]{ skillId, resumeId};
+        return this.jdbcTemplate.update(deleteResumeSkillQuery, deleteResumeSkillParams);
+    }
 }

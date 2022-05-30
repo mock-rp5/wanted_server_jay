@@ -37,19 +37,54 @@ public class ResumeController {
      */
     @ResponseBody
     @PostMapping("{userId}")
-    public BaseResponse<PostResumeRes> createResume(@PathVariable long userId, @RequestBody Resume resume){
+    public BaseResponse<PostResumeRes> createResume(@PathVariable long userId){
         try {
             //jwt
             long userIdByJwt = jwtService.getUserId();
             if (userId != userIdByJwt)
                 return new BaseResponse<>(INVALID_USER_JWT);
-            PostResumeReq postResumeReq = new PostResumeReq(userId, resume.getIntroduce(), resume.getResumeTitle(), resume.getName(), resume.getEmail(), resume.getPhone());
-            PostResumeRes postResumeRes = resumeService.createResume(postResumeReq);
+            PostResumeRes postResumeRes = resumeService.createResume(userId);
             return new BaseResponse<>(postResumeRes);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /**
+     * 이력서 기본 조회
+     * [Get] /{resumeId}/{userId}
+     */
+    @ResponseBody
+    @GetMapping("{resumeId}/{userId}")
+    public BaseResponse<GetResumeBasicRes> getResumeBasic(@PathVariable long resumeId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            GetResumeBasicRes getResumeBasicRes = resumeService.getResumeBasic(resumeId, userId);
+            return new BaseResponse<>(getResumeBasicRes);
+        } catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+//    /**
+//     * 이력서 상세 조회
+//     * [Get] /{resumeId}/{userId}/all
+//     */
+//    @ResponseBody
+//    @GetMapping("{resumeId}/{userId}/all")
+//    public BaseResponse<GetResumeDetailRes> getResumeDetail(@PathVariable long resumeId, @PathVariable long userId){
+//        try {
+//            long userIdByJwt = jwtService.getUserId();
+//            if (userId != userIdByJwt)
+//                return new BaseResponse<>(INVALID_USER_JWT);
+//            GetResumeDetailRes getResumeDetailRes = resumeService.getResumeDetail(resumeId, userId);
+//            return new BaseResponse<>(getResumeDetailRes);
+//        } catch (BaseException e){
+//            return new BaseResponse<>(e.getStatus());
+//        }
+//    }
 
     /**
      * 이력서 목록 조회 API
@@ -566,7 +601,7 @@ public class ResumeController {
 
     /**
      * 링크 조회 API
-     * [Get] /{resumeId}/{userId}/etc
+     * [Get] /{resumeId}/{userId}/link
      */
     @ResponseBody
     @GetMapping("{resumeId}/{userId}/link")
@@ -643,4 +678,62 @@ public class ResumeController {
         }
     }
 
+    /** 이력서 스킬 **/
+
+    /**
+     * 이력서 스킬 조회 API
+     * [Get] /{resumeId}/{userId}/skill
+     */
+    @ResponseBody
+    @GetMapping("{resumeId}/{userId}/skill")
+    public BaseResponse<List<GetResumeSkillListRes>> getResumeSkillList(@PathVariable long resumeId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            List<GetResumeSkillListRes> getResumeSkillListRes = resumeService.getResumeSkillList(resumeId);
+            return new BaseResponse<>(getResumeSkillListRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 이력서 스킬 추가 API
+     * [Post] /{resumeId}/{userId}/skill/{skillId}
+     */
+    @ResponseBody
+    @PostMapping("{resumeId}/{userId}/skill/{skillId}")
+    public BaseResponse<PostResumeSkillRes> createResumeSkill(@PathVariable long resumeId, @PathVariable long userId, @PathVariable long skillId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            PostResumeSkillRes postResumeSkillRes = resumeService.createResumeSkill(resumeId, skillId);
+            return new BaseResponse<>(postResumeSkillRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+
+    /**
+     * 이력서 스킬 삭제 API
+     * [Delete] /{resumeId}/{userId}/skill/{skillId}
+     */
+    @ResponseBody
+    @DeleteMapping("{resumeId}/{userId}/skill/{skillId}")
+    public BaseResponse<String> deleteResumeSkill(@PathVariable long resumeId, @PathVariable long userId, @PathVariable long skillId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            resumeService.deleteResumeSkill(resumeId, skillId);
+
+            String result = "이력서의 스킬이 삭제되었습니다.";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.sql.DataSource;
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.config.BaseResponseStatus.MODIFY_FAIL_USERIMG;
@@ -24,6 +26,7 @@ import static com.example.demo.config.BaseResponseStatus.MODIFY_FAIL_USERIMG;
  */
 @Service    // [Business Layer에서 Service를 명시하기 위해서 사용] 비즈니스 로직이나 respository layer 호출하는 함수에 사용된다.
             // [Business Layer]는 컨트롤러와 데이터 베이스를 연결
+@Transactional
 public class UserService {
     final Logger logger = LoggerFactory.getLogger(this.getClass()); // Log 처리부분: Log를 기록하기 위해 필요한 함수입니다.
 

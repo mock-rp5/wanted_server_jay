@@ -2,6 +2,8 @@ package com.example.demo.src.resume;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.resume.model.*;
+import com.example.demo.src.user.UserProvider;
+import com.example.demo.src.user.model.GetUserRes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +21,20 @@ public class ResumeService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final ResumeDao resumeDao;
+    private final UserProvider userProvider; // 이렇게 다른 도메인에서 가져와도 되나?
 
     @Autowired
-    public ResumeService(ResumeDao resumeDao) {
+    public ResumeService(ResumeDao resumeDao, UserProvider userProvider) {
         this.resumeDao = resumeDao;
+        this.userProvider = userProvider;
     }
 
     //이력서 생성
-    public PostResumeRes createResume(PostResumeReq postResumeReq) throws BaseException {
+    public PostResumeRes createResume(long userId) throws BaseException {
         try {
+            int resumeNum = getResumeList(userId).size() + 1;
+            GetUserRes user = userProvider.getUser(userId);
+            PostResumeReq postResumeReq = new PostResumeReq(userId, null, user.getName() + resumeNum ,user.getName(), user.getEmail(), user.getPhone());
             long resumeId = resumeDao.createResume(postResumeReq);
             return new PostResumeRes(resumeId);
         } catch (Exception e){
@@ -41,6 +48,16 @@ public class ResumeService {
         try {
             List<GetResumeListRes> getResumeListRes = resumeDao.getResumeList(userId);
             return getResumeListRes;
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 기본 조회
+    public GetResumeBasicRes getResumeBasic(long resumeId, long userId) throws BaseException{
+        try {
+            GetResumeBasicRes getResumeBasicRes = resumeDao.getResumeBasic(resumeId, userId);
+            return getResumeBasicRes;
         } catch (Exception e) {
             throw new BaseException(DATABASE_ERROR);
         }
@@ -352,6 +369,42 @@ public class ResumeService {
             int result = resumeDao.deleteLink(resumeId, linkId);
             if (result == 0){
                 throw new BaseException(DELETE_FAIL_LINK);
+            }
+        } catch (Exception e){
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    /** 이력서 스킬 **/
+
+    //이력서 스킬 리스트 조회
+    public List<GetResumeSkillListRes> getResumeSkillList(long resumeId) throws BaseException{
+        try {
+            List<GetResumeSkillListRes> getResumeSkillListRes = resumeDao.getResumeSkillList(resumeId);
+            return getResumeSkillListRes;
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 스킬 추가
+    public PostResumeSkillRes createResumeSkill(long resumeId, long skillId) throws BaseException{
+        try {
+            long resumeSkillId = resumeDao.createResumeSkill(resumeId, skillId);
+            return new PostResumeSkillRes(resumeSkillId);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //이력서 스킬 삭제
+    public void deleteResumeSkill(long resumeId, long resumeSkillId) throws BaseException{
+        try {
+            int result = resumeDao.deleteResumeSkill(resumeId, resumeSkillId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_RESUME_SKILL);
             }
         } catch (Exception e){
             throw new BaseException(DATABASE_ERROR);
