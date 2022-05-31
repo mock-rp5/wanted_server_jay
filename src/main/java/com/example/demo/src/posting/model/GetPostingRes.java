@@ -23,4 +23,6 @@ public class GetPostingRes {
     private long recommendMoney;
     private long applyMoney;
     private String placeFull;
+    private int like;
+    private int bookMark;
 }

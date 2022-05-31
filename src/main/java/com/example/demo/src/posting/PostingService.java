@@ -37,11 +37,21 @@ public class PostingService {
     }
 
     //채용 공고 상세 조회
-    public GetPostingRes getPostingDetail(long postingId) throws BaseException {
+    public GetPostingRes getPostingDetail(long postingId, long userId) throws BaseException {
         try {
             GetPosting getPosting = postingDao.getPosting(postingId);
             List<String> pictures = postingDao.getPictures(postingId);
             List<String> tags = postingDao.getTags(postingId);
+            int like;
+            int bookMark;
+
+            if (userId == 0){
+                like = 0;
+                bookMark = 0;
+            } else {
+                like = postingDao.checkLike(postingId, userId);
+                bookMark = postingDao.checkBookMark(postingId, userId);
+            }
 
             return new GetPostingRes(
                     getPosting.getPostingId(),
@@ -54,7 +64,8 @@ public class PostingService {
                     getPosting.getDetail(),
                     getPosting.getRecommendMoney(),
                     getPosting.getApplyMoney(),
-                    getPosting.getPlaceFull());
+                    getPosting.getPlaceFull(),
+                    like, bookMark);
         } catch (Exception e) {
             System.out.println(e.getCause());
             throw new BaseException(DATABASE_ERROR);
@@ -63,9 +74,14 @@ public class PostingService {
     //채용 공고 북마크
     public void bookMarkPosting(long postingId, long userId) throws BaseException {
         try {
-            int result = postingDao.bookMarkPosting(postingId, userId);
+            int result;
+            int r = postingDao.checkBookMarkHistory(postingId, userId);
+            if (r == 0)
+                result = postingDao.bookMarkPosting(postingId, userId);
+            else
+                result = postingDao.reBookMarkPosting(postingId, userId);
             if (result == 0){
-                throw new BaseException(CREATE_FAIL_BOOKMARK);
+                throw new BaseException(CREATE_FAIL_LIKE);
             }
         } catch (Exception e){
             System.out.println(e.getCause());
@@ -101,7 +117,12 @@ public class PostingService {
     //채용 공고 좋아요
     public void likePosting(long postingId, long userId) throws BaseException {
         try {
-            int result = postingDao.likePosting(postingId, userId);
+            int result;
+            int r = postingDao.checkLikeHistory(postingId, userId);
+            if (r == 0)
+                result = postingDao.likePosting(postingId, userId);
+            else
+                result = postingDao.reLikePosting(postingId, userId);
             if (result == 0){
                 throw new BaseException(CREATE_FAIL_LIKE);
             }

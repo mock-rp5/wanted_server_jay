@@ -86,10 +86,35 @@ public class PostingDao {
         return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
     }
 
+    //북마크 이력 체크
+    public int checkBookMarkHistory(long postingId, long userId) {
+        String checkBookMarkQuery = "select exists(select book_mark_id from book_mark where posting_id = ? and user_id = ?)"; // User Table에 해당 email 값을 갖는 유저 정보가 존재하는가?
+        Object[] checkBookMarkParams = new Object[]{postingId, userId}; // 해당(확인할) 이메일 값
+        return this.jdbcTemplate.queryForObject(checkBookMarkQuery,
+                int.class,
+                checkBookMarkParams);
+    }
+
+    // 현재 북마크 인지 체크
+    public int checkBookMark(long postingId, long userId) {
+        String checkBookMarkQuery = "select exists(select book_mark_id from book_mark where posting_id = ? and user_id = ? and status = ?)"; // User Table에 해당 email 값을 갖는 유저 정보가 존재하는가?
+        Object[] checkBookMarkParams = new Object[]{postingId, userId, "ACTIVE"}; // 해당(확인할) 이메일 값
+        return this.jdbcTemplate.queryForObject(checkBookMarkQuery,
+                int.class,
+                checkBookMarkParams);
+    }
+
+    //다시  북마크
+    public int reBookMarkPosting(long postingId, long userId) {
+        String bookMarkPostingQuery = "update book_mark set status = ? where posting_id = ? and user_id = ?";
+        Object[] bookMarkPostingParams = new Object[]{"ACTIVE", postingId, userId};
+        return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
+    }
+
     //북마크 해제
     public int cancelBookMark(long postingId, long userId) {
-        String bookMarkPostingQuery = "update book_mark set status = ? where posting_id = ?";
-        Object[] bookMarkPostingParams = new Object[]{"DELETE", postingId};
+        String bookMarkPostingQuery = "update book_mark set status = ? where posting_id = ? and user_id = ?";
+        Object[] bookMarkPostingParams = new Object[]{"DELETE", postingId, userId};
         return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
     }
 
@@ -127,26 +152,36 @@ public class PostingDao {
         return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
     }
 
-    //좋아요 체크
-    public String checkLike(long postingId, long userId){
-        String checkLikeQuery = "select * from likes where posting_id = ? and user_id = ?";
-        Object[] checkLikeParams = new Object[]{postingId, userId};
+    //좋아요 이력 체크
+    public int checkLikeHistory(long postingId, long userId) {
+        String checkLikeQuery = "select exists(select like_id from likes where posting_id = ? and user_id = ?)"; // User Table에 해당 email 값을 갖는 유저 정보가 존재하는가?
+        Object[] checkLikeParams = new Object[]{postingId, userId}; // 해당(확인할) 이메일 값
         return this.jdbcTemplate.queryForObject(checkLikeQuery,
-                (rs, rowNum)-> new String( rs.getString("status") )
-                , checkLikeParams);
+                int.class,
+                checkLikeParams);
     }
+
+    // 현재 좋아요 인지 체크
+    public int checkLike(long postingId, long userId) {
+        String checkLikeQuery = "select exists(select like_id from likes where posting_id = ? and user_id = ? and status = ?)"; // User Table에 해당 email 값을 갖는 유저 정보가 존재하는가?
+        Object[] checkLikeParams = new Object[]{postingId, userId, "ACTIVE"}; // 해당(확인할) 이메일 값
+        return this.jdbcTemplate.queryForObject(checkLikeQuery,
+                int.class,
+                checkLikeParams);
+    }
+
 
     //다시 좋아요
     public int reLikePosting(long postingId, long userId) {
-        String bookMarkPostingQuery = "update likes set status = ? where posting_id = ?";
-        Object[] bookMarkPostingParams = new Object[]{"ACTIVE", postingId};
+        String bookMarkPostingQuery = "update likes set status = ? where posting_id = ? and user_id = ?";
+        Object[] bookMarkPostingParams = new Object[]{"ACTIVE", postingId, userId};
         return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
     }
 
     //좋아요 해제
     public int cancelLike(long postingId, long userId) {
-        String bookMarkPostingQuery = "update likes set status = ? where posting_id = ?";
-        Object[] bookMarkPostingParams = new Object[]{"DELETE", postingId};
+        String bookMarkPostingQuery = "update likes set status = ? where posting_id = ? and user_id = ?";
+        Object[] bookMarkPostingParams = new Object[]{"DELETE", postingId, userId};
         return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
     }
 

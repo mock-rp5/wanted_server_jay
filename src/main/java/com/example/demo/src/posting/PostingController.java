@@ -63,7 +63,13 @@ public class PostingController {
     @GetMapping("{postingId}")
     public BaseResponse<GetPostingRes> getPostingDetail(@PathVariable long postingId){
         try {
-             GetPostingRes getPostingRes = postingService.getPostingDetail(postingId);
+            long userId;
+            try {
+                userId = jwtService.getUserId();
+            } catch (Exception e){
+                userId = 0;
+            }
+             GetPostingRes getPostingRes = postingService.getPostingDetail(postingId, userId);
              return new BaseResponse<>(getPostingRes);
         } catch (BaseException e) {
             return new BaseResponse<>(e.getStatus());
