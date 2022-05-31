@@ -80,14 +80,14 @@ com/example/demo/src/resume/model/PostResumeReq.java
  com.example.demo.src.resume.model.PostResumeReq
 com/example/demo/src/resume/model/PostEtcRes.java
  com.example.demo.src.resume.model.PostEtcRes
-com/example/demo/src/resume/ResumeService.java
- com.example.demo.src.resume.ResumeService
+com/example/demo/src/posting/model/GetPostingListRes.java
+ com.example.demo.src.posting.model.GetPostingListRes
 com/example/demo/config/BaseResponseStatus.java
  com.example.demo.config.BaseResponseStatus
 com/example/demo/config/BaseResponse.java
  com.example.demo.config.BaseResponse
-com/example/demo/src/user/UserProvider.java
- com.example.demo.src.user.UserProvider
+com/example/demo/src/posting/PostingController.java
+ com.example.demo.src.posting.PostingController
 com/example/demo/config/BaseException.java
  com.example.demo.config.BaseException
 com/example/demo/utils/JwtService.java
@@ -98,14 +98,14 @@ com/example/demo/src/resume/model/GetResumeBasicRes.java
  com.example.demo.src.resume.model.GetResumeBasicRes
 com/example/demo/src/resume/model/GetResumeDetailRes.java
  com.example.demo.src.resume.model.GetResumeDetailRes
-com/example/demo/src/user/UserService.java
- com.example.demo.src.user.UserService
-com/example/demo/src/user/UserController.java
- com.example.demo.src.user.UserController
+com/example/demo/src/posting/PostingDao.java
+ com.example.demo.src.posting.PostingDao
+com/example/demo/src/posting/model/GetPostingListReq.java
+ com.example.demo.src.posting.model.GetPostingListReq
 com/example/demo/src/posting/model/PostApplyRes.java
  com.example.demo.src.posting.model.PostApplyRes
-com/example/demo/src/resume/ResumeController.java
- com.example.demo.src.resume.ResumeController
+com/example/demo/src/resume/ResumeService.java
+ com.example.demo.src.resume.ResumeService
 com/example/demo/src/posting/model/PostApplyReq.java
  com.example.demo.src.posting.model.PostApplyReq
 com/example/demo/src/posting/model/GetPosting.java
@@ -114,11 +114,13 @@ com/example/demo/src/posting/model/GetPostingRes.java
  com.example.demo.src.posting.model.GetPostingRes
 com/example/demo/src/posting/PostingService.java
  com.example.demo.src.posting.PostingService
-com/example/demo/src/posting/PostingController.java
- com.example.demo.src.posting.PostingController
-com/example/demo/src/posting/model/GetPostingListRes.java
- com.example.demo.src.posting.model.GetPostingListRes
-com/example/demo/src/posting/PostingDao.java
- com.example.demo.src.posting.PostingDao
-com/example/demo/src/posting/model/GetPostingListReq.java
- com.example.demo.src.posting.model.GetPostingListReq
+com/example/demo/src/user/UserService.java
+ com.example.demo.src.user.UserService
+com/example/demo/src/resume/ResumeController.java
+ com.example.demo.src.resume.ResumeController
+com/example/demo/src/user/UserProvider.java
+ com.example.demo.src.user.UserProvider
+com/example/demo/src/user/model/PostCheckEmailReq.java
+ com.example.demo.src.user.model.PostCheckEmailReq
+com/example/demo/src/user/UserController.java
+ com.example.demo.src.user.UserController

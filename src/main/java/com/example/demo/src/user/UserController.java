@@ -1,5 +1,7 @@
 package com.example.demo.src.user;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.graalvm.compiler.nodes.calc.IntegerDivRemNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
@@ -70,6 +72,21 @@ public class UserController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+    /**
+     * 가입 유무 이메일로 확인
+     * [Post] /users/email
+     */
+    @ResponseBody
+    @PostMapping("/email")
+    public BaseResponse<Integer> checkEmail(@RequestBody PostCheckEmailReq postCheckEmailReq){
+        try {
+            int i = userProvider.checkEmail(postCheckEmailReq.getEmail());
+            return new BaseResponse<>(i);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 
     /**
      * 로그인 API
