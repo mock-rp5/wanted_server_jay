@@ -79,6 +79,104 @@ public class PostingDao {
                 (rs, rowNum) -> new String( rs.getString("tag_name") )
                 , postingId);
     }
+    // 북마크
+    public int bookMarkPosting(long postingId, long userId) {
+        String bookMarkPostingQuery = "insert into book_mark (posting_id, user_id) values (?,?)";
+        Object[] bookMarkPostingParams = new Object[]{postingId, userId};
+        return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
+    }
+
+    //북마크 해제
+    public int cancelBookMark(long postingId, long userId) {
+        String bookMarkPostingQuery = "update book_mark set status = ? where posting_id = ?";
+        Object[] bookMarkPostingParams = new Object[]{"DELETE", postingId};
+        return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
+    }
+
+    //북마크한 채용공고 조회
+    public List<GetBookMarkPostingRes> getBookMarkPostings(long userId){
+        String getBookMarkPostingsQuery = "select cp.picture, c.company_name, p.posting_id,p.title, p.place_1, p.recommend_money, p.apply_money, b.book_mark_id, b.created_at, b.user_id " +
+                "from company as c " +
+                "inner join (select cp.company_id, min(com_pic_id), cp.picture " +
+                "from company_picture as cp " +
+                "group by company_id) as cp " +
+                "on cp.company_id = c.company_id " +
+                "inner join posting as p " +
+                "on p.company_id = c.company_id " +
+                "inner join book_mark as b " +
+                "on b.posting_id = p.posting_id " +
+                "where user_id = ? and b.status = ?" +
+                "order by b.created_at desc";
+        Object[] getBookMarkPostingsParams = new Object[]{userId, "ACTIVE"};
+        return this.jdbcTemplate.query(getBookMarkPostingsQuery,
+                (rs, rowNum) -> new GetBookMarkPostingRes(
+                        rs.getLong("posting_id"),
+                        rs.getLong("book_mark_id"),
+                        rs.getString("created_at"),
+                        rs.getString("picture"),
+                        rs.getString("company_name"),
+                        rs.getString("place_1"),
+                        rs.getLong("recommend_money") + rs.getLong("apply_money")
+                ), getBookMarkPostingsParams);
+    }
+
+    //좋아요
+    public int likePosting(long postingId, long userId) {
+        String bookMarkPostingQuery = "insert into likes (posting_id, user_id) values (?,?)";
+        Object[] bookMarkPostingParams = new Object[]{postingId, userId};
+        return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
+    }
+
+    //좋아요 체크
+    public String checkLike(long postingId, long userId){
+        String checkLikeQuery = "select * from likes where posting_id = ? and user_id = ?";
+        Object[] checkLikeParams = new Object[]{postingId, userId};
+        return this.jdbcTemplate.queryForObject(checkLikeQuery,
+                (rs, rowNum)-> new String( rs.getString("status") )
+                , checkLikeParams);
+    }
+
+    //다시 좋아요
+    public int reLikePosting(long postingId, long userId) {
+        String bookMarkPostingQuery = "update likes set status = ? where posting_id = ?";
+        Object[] bookMarkPostingParams = new Object[]{"ACTIVE", postingId};
+        return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
+    }
+
+    //좋아요 해제
+    public int cancelLike(long postingId, long userId) {
+        String bookMarkPostingQuery = "update likes set status = ? where posting_id = ?";
+        Object[] bookMarkPostingParams = new Object[]{"DELETE", postingId};
+        return this.jdbcTemplate.update(bookMarkPostingQuery, bookMarkPostingParams);
+    }
+
+    //좋아요한 채용공고 조회
+   public List<GetlikePostingRes> getLikePostings(long userId){
+        String getlikePostingsQuery = "select cp.picture, c.company_name, p.posting_id,p.title, p.place_1, p.recommend_money, p.apply_money, l.like_id, l.created_at, l.user_id " +
+                "from company as c " +
+                "inner join (select cp.company_id, min(com_pic_id), cp.picture " +
+                "from company_picture as cp " +
+                "group by company_id) as cp " +
+                "on cp.company_id = c.company_id " +
+                "inner join posting as p " +
+                "on p.company_id = c.company_id " +
+                "inner join likes as l " +
+                "on l.posting_id = p.posting_id " +
+                "where user_id = ? and l.status = ? " +
+                "order by l.created_at desc";
+        Object[] getLikePostingParams = new Object[]{userId, "ACTIVE"};
+        return this.jdbcTemplate.query(getlikePostingsQuery,
+                (rs, rowNum) -> new GetlikePostingRes(
+                        rs.getLong("posting_id"),
+                        rs.getLong("like_id"),
+                        rs.getString("created_at"),
+                        rs.getString("picture"),
+                        rs.getString("company_name"),
+                        rs.getString("place_1"),
+                        rs.getLong("recommend_money") + rs.getLong("apply_money")
+                ), getLikePostingParams);
+    }
+
 
 //    //채용공고 리스트 조회
 //    public List<GetPostingListRes> getPostingList(GetPostingListReq getPostingListReq){
@@ -86,7 +184,4 @@ public class PostingDao {
 //
 //    }
 
-    private int getListSize(List<String> list){
-        return list.size();
-    }
 }

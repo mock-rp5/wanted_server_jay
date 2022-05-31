@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
 @Transactional
@@ -60,6 +60,82 @@ public class PostingService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+    //채용 공고 북마크
+    public void bookMarkPosting(long postingId, long userId) throws BaseException {
+        try {
+            int result = postingDao.bookMarkPosting(postingId, userId);
+            if (result == 0){
+                throw new BaseException(CREATE_FAIL_BOOKMARK);
+            }
+        } catch (Exception e){
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //북마크 해제
+    public void cancelBookMark(long postingId, long userId) throws BaseException {
+        try {
+            int result = postingDao.cancelBookMark(postingId, userId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_BOOKMARK);
+            }
+        } catch (Exception e){
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //북마크한 채용 공고 조회
+    public List<GetBookMarkPostingRes> getBookMarkPostings(int userId) throws BaseException{
+        try {
+            List<GetBookMarkPostingRes> getBookMarkPostingRes = postingDao.getBookMarkPostings(userId);
+            return getBookMarkPostingRes;
+        } catch (Exception e){
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+    //좋아요
+
+    //채용 공고 좋아요
+    public void likePosting(long postingId, long userId) throws BaseException {
+        try {
+            int result = postingDao.likePosting(postingId, userId);
+            if (result == 0){
+                throw new BaseException(CREATE_FAIL_LIKE);
+            }
+        } catch (Exception e){
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //좋아요 해제
+    public void cancelLike(long postingId, long userId) throws BaseException {
+        try {
+            int result = postingDao.cancelLike(postingId, userId);
+            if (result == 0){
+                throw new BaseException(DELETE_FAIL_LIKE);
+            }
+        } catch (Exception e){
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //좋아요한 채용 공고 조회
+    public List<GetlikePostingRes> getLikePostings(int userId) throws BaseException{
+        try {
+            List<GetlikePostingRes> getlikePostingRes = postingDao.getLikePostings(userId);
+            return getlikePostingRes;
+        } catch (Exception e){
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+
 
 //    // 채용 공고 리스트 조회
 //    public List<GetPostingListRes> getPostingList(GetPostingListReq getPostingListReq) throws BaseException {

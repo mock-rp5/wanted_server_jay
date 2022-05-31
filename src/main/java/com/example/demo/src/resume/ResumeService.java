@@ -2,6 +2,7 @@ package com.example.demo.src.resume;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.resume.model.*;
+import com.example.demo.src.skill.model.GetSkillsRes;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.src.user.model.GetUserRes;
 import org.slf4j.Logger;
@@ -62,6 +63,38 @@ public class ResumeService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+    //이력서 상세 조회
+    public GetResumeDetailRes getResumeDetail(long resumeId, long userId) throws BaseException{
+        try {
+            GetResumeBasicRes getResumeBasicRes = resumeDao.getResumeBasic(resumeId, userId);
+            List<GetCareerListRes> getCareerListResList = resumeDao.getCareerList(resumeId);
+            List<GetResultListRes> getResultListRes = resumeDao.getResultList(resumeId);
+            List<GetEducationListRes> getEducationListRes = resumeDao.getEducationList(resumeId);
+            List<GetResumeSkillListRes> getResumeSkillListRes = resumeDao.getResumeSkillList(resumeId);
+            List<GetEtcListRes> getEtcListRes = resumeDao.getEtcList(resumeId);
+            List<GetLanguageListRes> getLanguageListRes = resumeDao.getLanguageList(resumeId);
+            List<GetLinkListRes> getLinkListRes = resumeDao.getLinkList(resumeId);
+
+
+            return new GetResumeDetailRes(
+                    getResumeBasicRes.getResumeId(),
+                    getResumeBasicRes.getResumeTitle(),
+                    getResumeBasicRes.getName(),
+                    getResumeBasicRes.getEmail(),
+                    getResumeBasicRes.getPhone(),
+                    getResumeBasicRes.getIntroduce(),
+                    getCareerListResList,
+                    getResultListRes,
+                    getEducationListRes,
+                    getResumeSkillListRes,
+                    getEtcListRes,
+                    getLanguageListRes,
+                    getLinkListRes);
+        } catch (Exception e) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 
     //이력서 임시저장
     public void modifyResume(PatchResumeReq patchResumeReq) throws BaseException{
