@@ -15,6 +15,7 @@ import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/app/resumes")
 public class ResumeController {
@@ -68,23 +69,23 @@ public class ResumeController {
         }
     }
 
-//    /**
-//     * 이력서 상세 조회
-//     * [Get] /{resumeId}/{userId}/all
-//     */
-//    @ResponseBody
-//    @GetMapping("{resumeId}/{userId}/all")
-//    public BaseResponse<GetResumeDetailRes> getResumeDetail(@PathVariable long resumeId, @PathVariable long userId){
-//        try {
-//            long userIdByJwt = jwtService.getUserId();
-//            if (userId != userIdByJwt)
-//                return new BaseResponse<>(INVALID_USER_JWT);
-//            GetResumeDetailRes getResumeDetailRes = resumeService.getResumeDetail(resumeId, userId);
-//            return new BaseResponse<>(getResumeDetailRes);
-//        } catch (BaseException e){
-//            return new BaseResponse<>(e.getStatus());
-//        }
-//    }
+    /**
+     * 이력서 상세 조회
+     * [Get] /{resumeId}/{userId}/all
+     */
+    @ResponseBody
+    @GetMapping("{resumeId}/{userId}/all")
+    public BaseResponse<GetResumeDetailRes> getResumeDetail(@PathVariable long resumeId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            GetResumeDetailRes getResumeDetailRes = resumeService.getResumeDetail(resumeId, userId);
+            return new BaseResponse<>(getResumeDetailRes);
+        } catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
     /**
      * 이력서 목록 조회 API

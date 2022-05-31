@@ -14,6 +14,7 @@ import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/app/postings")
 public class PostingController {
@@ -68,6 +69,127 @@ public class PostingController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /**
+     * 채용 공고 북마크
+     * [Post] /bookmarks/{postingId}/{userId}
+     */
+    @ResponseBody
+    @PostMapping("bookmarks/{postingId}/{userId}")
+    public BaseResponse<String> bookmarkPosting(@PathVariable long postingId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+
+            postingService.bookMarkPosting(postingId, userId);
+            String result = "북마크 등록";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 북마크 취소
+     * [Patch] /bookmarks/{postingId}/{userId}
+     */
+    @ResponseBody
+    @PatchMapping("bookmarks/{postingId}/{userId}")
+    public BaseResponse<String> cancelBookMark(@PathVariable long postingId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            postingService.cancelBookMark(postingId, userId);
+            String result = "북마크 해제";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 북마크한 채용공고 조회
+     * [Get] /bookmarks/users/:userId
+     */
+    @ResponseBody
+    @GetMapping("bookmarks/users/{userId}")
+    public BaseResponse<List<GetBookMarkPostingRes>> getBookMarkPostings(@PathVariable("userId") int userId){
+        try {
+            //jwt 인가 부분 **************************************
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            //*************************************************
+            List<GetBookMarkPostingRes> getBookMarkPostingRes = postingService.getBookMarkPostings(userId);
+            return new BaseResponse<>(getBookMarkPostingRes);
+        } catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+    //좋아요
+    /**
+     * 채용 공고 좋아요
+     * [Post] /like/{postingId}/{userId}
+     */
+    @ResponseBody
+    @PostMapping("like/{postingId}/{userId}")
+    public BaseResponse<String> likePosting(@PathVariable long postingId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+
+            postingService.likePosting(postingId, userId);
+            String result = "좋아요 등록";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 좋아요 취소
+     * [Patch] /like/{postingId}/{userId}
+     */
+    @ResponseBody
+    @PatchMapping("like/{postingId}/{userId}")
+    public BaseResponse<String> cancelLike(@PathVariable long postingId, @PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            postingService.cancelLike(postingId, userId);
+            String result = "좋아요 해제";
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 좋아요한 채용공고 조회
+     * [Get] /like/users/:userId
+     */
+    @ResponseBody
+    @GetMapping("like/users/{userId}")
+    public BaseResponse<List<GetlikePostingRes>> getLikePostings(@PathVariable("userId") int userId){
+        try {
+            //jwt 인가 부분 **************************************
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            //*************************************************
+            List<GetlikePostingRes> getlikePostingRes = postingService.getLikePostings(userId);
+            return new BaseResponse<>(getlikePostingRes);
+        } catch (BaseException e){
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+
+
 
     /**
      * 채용 공고 리스트 조회

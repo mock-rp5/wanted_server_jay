@@ -18,6 +18,7 @@ import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.config.BaseResponseStatus.USERS_STATUS_ERROR;
 import static com.example.demo.utils.ValidationRegex.isRegexEmail;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/app/users")
 /**

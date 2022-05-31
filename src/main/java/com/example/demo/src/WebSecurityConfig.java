@@ -20,23 +20,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 //        http.csrf().disable();
-        http.csrf().disable().cors().configurationSource(corsConfigurationSource());  // CSRF 비활성화,
+        http.csrf().disable();  // CSRF 비활성화,
         // REST API 서버는 stateless하게 개발하기 때문에 사용자 정보를 Session에 저장 안함
         // jwt 토큰을 Cookie에 저장하지 않는다면, CSRF에 어느정도는 안전.
     }
 
-    // CORS 허용 적용
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOrigin("*");
-        configuration.addAllowedHeader("*");
-        configuration.addAllowedMethod("*");
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }
