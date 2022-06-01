@@ -273,7 +273,7 @@ public class PostingDao {
             }
         }
 
-        StringBuilder getPostingListQuery = new StringBuilder("select cp.picture, jp.job_id,sp.skill_id,p.posting_id,p.company_id, j.job_group_id,ta.tag_id, c.company_name,ta.tag_name, p.job_group_id, p.created_at, p.title, p.recommend_money, p.apply_money, p.place_1, p.place_2, p.career " +
+        StringBuilder getPostingListQuery = new StringBuilder("select cp.picture, lc.like_count ,jp.job_id,sp.skill_id,p.posting_id,p.company_id, j.job_group_id,ta.tag_id, c.company_name,ta.tag_name, p.job_group_id, p.created_at, p.title, p.recommend_money, p.apply_money, p.place_1, p.place_2, p.career " +
                 "from ( " +
                 "select tc.company_id, t.tag_id, t.tag_name " +
                 "from tag_com_relation as tc " +
@@ -300,6 +300,11 @@ public class PostingDao {
                 "on jp.posting_id = p.posting_id " +
                 "left outer join job as j " +
                 "on j.job_id = jp.job_id " +
+                "left outer join ( " +
+                "select posting_id, count(like_id) as like_count " +
+                "from likes as l " +
+                "group by posting_id) as lc " +
+                "on lc.posting_id = p.posting_id " +
                 "where p.career >= (?) ");
 
         long jobGroupId = getPostingListReq.getJobGroupId();
@@ -354,7 +359,18 @@ public class PostingDao {
             getPostingListQuery.append("and j.job_group_id = (?) ");
             getPostingListParams.add(jobGroupId);
         }
-        getPostingListQuery.append("group by posting_id");
+        getPostingListQuery.append("group by posting_id ");
+
+        String sortType = getPostingListReq.getSortType();
+        if (sortType.equals("recent")){
+            getPostingListQuery.append("order by p.created_at desc");
+        } else if (sortType.equals("popular")){
+            getPostingListQuery.append("order by lc.like_count desc");
+        } else if (sortType.equals("money")){
+            getPostingListQuery.append("order by p.apply_money desc");
+        }
+
+
         String getPostingQuery = getPostingListQuery.toString();
         System.out.println(getPostingQuery);
 
