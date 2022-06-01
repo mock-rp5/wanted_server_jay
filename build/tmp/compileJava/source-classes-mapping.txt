@@ -14,12 +14,12 @@ com/example/demo/src/resume/model/GetResumeDetailRes.java
  com.example.demo.src.resume.model.GetResumeDetailRes
 com/example/demo/config/BaseResponseStatus.java
  com.example.demo.config.BaseResponseStatus
-com/example/demo/src/resume/model/PatchLinkReq.java
- com.example.demo.src.resume.model.PatchLinkReq
+com/example/demo/src/resume/ResumeController.java
+ com.example.demo.src.resume.ResumeController
 com/example/demo/src/resume/model/PostResumeSkillRes.java
  com.example.demo.src.resume.model.PostResumeSkillRes
-com/example/demo/src/posting/model/GetPostingListReq.java
- com.example.demo.src.posting.model.GetPostingListReq
+com/example/demo/src/user/UserProvider.java
+ com.example.demo.src.user.UserProvider
 com/example/demo/src/resume/model/PatchResultReq.java
  com.example.demo.src.resume.model.PatchResultReq
 com/example/demo/src/resume/model/PostLinkRes.java
@@ -44,8 +44,8 @@ com/example/demo/src/skill/model/SearchSkillsReq.java
  com.example.demo.src.skill.model.SearchSkillsReq
 com/example/demo/config/BaseResponse.java
  com.example.demo.config.BaseResponse
-com/example/demo/utils/JwtService.java
- com.example.demo.utils.JwtService
+com/example/demo/src/skill/SkillController.java
+ com.example.demo.src.skill.SkillController
 com/example/demo/src/resume/model/GetResumeBasicRes.java
  com.example.demo.src.resume.model.GetResumeBasicRes
 com/example/demo/src/resume/model/GetLinkListRes.java
@@ -90,8 +90,8 @@ com/example/demo/utils/AES128.java
  com.example.demo.utils.AES128
 com/example/demo/src/user/model/PatchUserReq.java
  com.example.demo.src.user.model.PatchUserReq
-com/example/demo/src/user/UserProvider.java
- com.example.demo.src.user.UserProvider
+com/example/demo/src/WebSecurityConfig.java
+ com.example.demo.src.WebSecurityConfig
 com/example/demo/src/resume/model/PatchEducationReq.java
  com.example.demo.src.resume.model.PatchEducationReq
 com/example/demo/src/test/TestController.java
@@ -106,8 +106,8 @@ com/example/demo/src/resume/model/PostCareerRes.java
  com.example.demo.src.resume.model.PostCareerRes
 com/example/demo/src/resume/model/PostResumeReq.java
  com.example.demo.src.resume.model.PostResumeReq
-com/example/demo/src/WebSecurityConfig.java
- com.example.demo.src.WebSecurityConfig
+com/example/demo/src/resume/model/PatchLinkReq.java
+ com.example.demo.src.resume.model.PatchLinkReq
 com/example/demo/src/skill/model/PostSkillsRes.java
  com.example.demo.src.skill.model.PostSkillsRes
 com/example/demo/src/resume/model/PostEtcRes.java
@@ -116,29 +116,29 @@ com/example/demo/src/resume/model/PostEducationRes.java
  com.example.demo.src.resume.model.PostEducationRes
 com/example/demo/src/resume/model/GetLanguageListRes.java
  com.example.demo.src.resume.model.GetLanguageListRes
-com/example/demo/src/skill/SkillService.java
- com.example.demo.src.skill.SkillService
+com/example/demo/src/user/UserController.java
+ com.example.demo.src.user.UserController
+com/example/demo/src/posting/model/GetLikeCheckRes.java
+ com.example.demo.src.posting.model.GetLikeCheckRes
 com/example/demo/src/user/model/User.java
  com.example.demo.src.user.model.User
-com/example/demo/src/posting/PostingDao.java
- com.example.demo.src.posting.PostingDao
+com/example/demo/src/posting/model/GetPostingRes.java
+ com.example.demo.src.posting.model.GetPostingRes
 com/example/demo/src/user/model/PostCheckEmailReq.java
  com.example.demo.src.user.model.PostCheckEmailReq
 com/example/demo/src/user/model/GetUserRes.java
  com.example.demo.src.user.model.GetUserRes
 com/example/demo/DemoApplication.java
  com.example.demo.DemoApplication
-com/example/demo/src/skill/SkillController.java
- com.example.demo.src.skill.SkillController
-com/example/demo/src/user/UserController.java
- com.example.demo.src.user.UserController
-com/example/demo/src/resume/ResumeController.java
- com.example.demo.src.resume.ResumeController
-com/example/demo/src/posting/model/GetLikeCheckRes.java
- com.example.demo.src.posting.model.GetLikeCheckRes
+com/example/demo/utils/JwtService.java
+ com.example.demo.utils.JwtService
+com/example/demo/src/skill/SkillService.java
+ com.example.demo.src.skill.SkillService
+com/example/demo/src/posting/model/GetPostingListReq.java
+ com.example.demo.src.posting.model.GetPostingListReq
 com/example/demo/src/posting/PostingService.java
  com.example.demo.src.posting.PostingService
-com/example/demo/src/posting/model/GetPostingRes.java
- com.example.demo.src.posting.model.GetPostingRes
 com/example/demo/src/posting/PostingController.java
  com.example.demo.src.posting.PostingController
+com/example/demo/src/posting/PostingDao.java
+ com.example.demo.src.posting.PostingDao
