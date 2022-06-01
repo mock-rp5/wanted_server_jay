@@ -11,6 +11,7 @@ import com.example.demo.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -248,6 +249,29 @@ public class UserController {
             return new BaseResponse<>(result);
         } catch (BaseException e){
             return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    /**
+     * 카카오
+     */
+    @ResponseBody
+    @GetMapping("/kakao")
+    public BaseResponse<PostUserRes>  kakaoCallback(@RequestParam String code) throws BaseException {
+        System.out.println(code);
+        String access_Token = userService.getKaKaoAccessToken(code);
+        ArrayList<String> res = userService.getKakaoUser(access_Token);
+        String email = res.get(0);
+        String name = res.get(1);
+
+        if (email == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+        }
+        try {
+            PostUserRes postUserRes = userService.createKakaoUser(email, name);
+            return new BaseResponse<>(postUserRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
         }
     }
 }

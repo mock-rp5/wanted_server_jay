@@ -165,4 +165,23 @@ public class UserDao {
 
         return this.jdbcTemplate.update(modifyUserImgQuery, modifyUserImgParams);
     }
+
+    //kakao 회원가입
+    public int createKakaoUser(String email, String name){
+        String createKakaoUserQuery = "insert into user (email, name, phone, password) VALUES (?,?,?,?)";
+        Object[] createKakaoUserParams = new Object[]{email, name, "kakao", "kakao"};
+        this.jdbcTemplate.update(createKakaoUserQuery, createKakaoUserParams);
+
+        String lastInserIdQuery = "select last_insert_id()"; // 가장 마지막에 삽입된(생성된) id값은 가져온다.
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery, int.class);
+    }
+
+    //이메일로 userId 조회
+    public int getUserIdByEmail(String email){
+        String getUserIdByEmailQuery = "select user_id from user where email = ?";
+        String getUserIdByEmailParams = email;
+        return this.jdbcTemplate.queryForObject(getUserIdByEmailQuery,
+                int.class,
+                getUserIdByEmailParams);
+    }
 }
