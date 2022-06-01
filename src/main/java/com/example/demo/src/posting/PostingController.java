@@ -204,30 +204,33 @@ public class PostingController {
      * https://www.wanted.co.kr/wdlist/518/872?job_sort=company.response_rate_order&years=0&skill_tags=3078&skill_tags=3451&locations=all
      */
 
-//    @ResponseBody
-//    @GetMapping("{jobGroupId}")
-//    public BaseResponse<List<GetPostingListRes>> getPostingList(
-//            @PathVariable long jobGroupId,
-//            @RequestParam(required = false, defaultValue = "popular") String sortType,
-//            @RequestParam(required = false) List<String> location,
-//            @RequestParam(required = false) List<String> skillTags,
-//            @RequestParam(required = false, defaultValue = "0") long years,
-//            @RequestParam(required = false) List<String> userTags,
-//            @RequestParam(required = false) List<String> jobSelected){
-//        try {
-//            GetPostingListReq getPostingListReq = new GetPostingListReq(
-//                    jobGroupId,
-//                    sortType,
-//                    location,
-//                    skillTags,
-//                    years,
-//                    userTags,
-//                    jobSelected
-//            );
-//            List<GetPostingListRes> getPostingListRes = postingService.getPostingList(getPostingListReq);
-//            return new BaseResponse<>(getPostingListRes);
-//        } catch (BaseException e) {
-//            return new BaseResponse<>(e.getStatus());
-//        }
-//    }
+    @ResponseBody
+    @GetMapping("list/{jobGroupId}")
+    public BaseResponse<List<GetPostingListRes>> getPostingList(
+            @PathVariable long jobGroupId,
+            @RequestParam(required = false, defaultValue = "popular") String sortType,
+            @RequestParam(required = false) List<String> location_1,
+            @RequestParam(required = false) List<String> location_2,
+            @RequestParam(required = false) List<String> skillTags,
+            @RequestParam(required = false, defaultValue = "0") long years,
+            @RequestParam(required = false) List<String> userTags,
+            @RequestParam(required = false) List<String> jobSelected){
+        try {
+            GetPostingListReq getPostingListReq = new GetPostingListReq(
+                    jobGroupId,
+                    sortType,
+                    location_1,
+                    location_2,
+                    skillTags,
+                    years,
+                    userTags,
+                    jobSelected
+            );
+            System.out.println(getPostingListReq.toString());
+            List<GetPostingListRes> getPostingListRes = postingService.getPostingList(getPostingListReq);
+            return new BaseResponse<>(getPostingListRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

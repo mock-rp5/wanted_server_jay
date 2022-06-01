@@ -158,15 +158,16 @@ public class PostingService {
 
 
 
-//    // 채용 공고 리스트 조회
-//    public List<GetPostingListRes> getPostingList(GetPostingListReq getPostingListReq) throws BaseException {
-//        try {
-//            List<GetPostingListRes> getPostingListRes = postingDao.getPostingList(getPostingListReq);
-//            return getPostingListRes;
-//        } catch (Exception e) {
-//            throw new BaseException(DATABASE_ERROR);
-//        }
-//    }
+    // 채용 공고 리스트 조회
+    public List<GetPostingListRes> getPostingList(GetPostingListReq getPostingListReq) throws BaseException {
+        try {
+            List<GetPostingListRes> getPostingListRes = postingDao.getPostingList(getPostingListReq);
+            return getPostingListRes;
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
 
 }

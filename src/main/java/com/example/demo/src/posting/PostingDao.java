@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -200,6 +201,7 @@ public class PostingDao {
                 "where user_id = ? and l.status = ? " +
                 "order by l.created_at desc";
         Object[] getLikePostingParams = new Object[]{userId, "ACTIVE"};
+       System.out.println(Arrays.toString(getLikePostingParams));
         return this.jdbcTemplate.query(getlikePostingsQuery,
                 (rs, rowNum) -> new GetlikePostingRes(
                         rs.getLong("posting_id"),
@@ -213,10 +215,161 @@ public class PostingDao {
     }
 
 
-//    //채용공고 리스트 조회
-//    public List<GetPostingListRes> getPostingList(GetPostingListReq getPostingListReq){
-//        String getPostingListQuery ="";
-//
-//    }
+    //채용공고 리스트 조회
+    public List<GetPostingListRes> getPostingList(GetPostingListReq getPostingListReq){
+        List<String> locationOneParams = getPostingListReq.getLocation_1();
+        List<String> locationTwoParams = getPostingListReq.getLocation_2();
+        List<String> skillTagParams = getPostingListReq.getSkillTags();
+        List<String> userTagParams = getPostingListReq.getUserTags();
+        List<String> jobParams = getPostingListReq.getJobSelected();
+        long years = getPostingListReq.getYears();
+        int ut, st, l1, l2, j;
 
+        List<Object> getPostingListParams = new ArrayList<Object>();
+        getPostingListParams.add(years);
+
+        if (userTagParams == null)
+            ut = 0;
+        else{
+            ut = userTagParams.size();
+            for (String userTagParam : userTagParams) {
+                getPostingListParams.add(userTagParam);
+            }
+        }
+
+        if (locationOneParams == null)
+            l1 = 0;
+        else{
+            l1 = locationOneParams.size();
+            for (String locationOneParam : locationOneParams) {
+                getPostingListParams.add(locationOneParam);
+            }
+        }
+
+        if (locationTwoParams == null)
+            l2 = 0;
+        else{
+            l2 = locationTwoParams.size();
+            for (String locationTwoParam : locationTwoParams) {
+                getPostingListParams.add(locationTwoParam);
+            }
+        }
+
+        if (skillTagParams == null)
+            st = 0;
+        else{
+            st = skillTagParams.size();
+            for (String skillTagParam : skillTagParams) {
+                getPostingListParams.add(skillTagParam);
+            }
+        }
+
+        if (jobParams == null)
+            j = 0;
+        else{
+            j = jobParams.size();
+            for (String jobParam : jobParams) {
+                getPostingListParams.add(jobParam);
+            }
+        }
+
+        StringBuilder getPostingListQuery = new StringBuilder("select cp.picture, jp.job_id,sp.skill_id,p.posting_id,p.company_id, j.job_group_id,ta.tag_id, c.company_name,ta.tag_name, p.job_group_id, p.created_at, p.title, p.recommend_money, p.apply_money, p.place_1, p.place_2, p.career " +
+                "from ( " +
+                "select tc.company_id, t.tag_id, t.tag_name " +
+                "from tag_com_relation as tc " +
+                "left outer join tag as t " +
+                "on t.tag_id = tc.tag_id " +
+                ") as ta " +
+                "left outer join posting as p " +
+                "on ta.company_id = p.company_id " +
+                "left outer join company as c " +
+                "on c.company_id = p.company_id " +
+                "left outer join (select cp.company_id, min(com_pic_id), cp.picture " +
+                "from company_picture as cp " +
+                "group by company_id) as cp " +
+                "on cp.company_id = p.company_id " +
+                "left outer join (select s.skill_id, sp.posting_id " +
+                "from skill_posting_relation as sp " +
+                "right outer join skill as s " +
+                "on s.skill_id = sp.skill_id " +
+                ") as sp " +
+                "on sp.posting_id = p.posting_id " +
+                "left outer join (select * " +
+                "from job_posting_relation " +
+                ") as jp " +
+                "on jp.posting_id = p.posting_id " +
+                "left outer join job as j " +
+                "on j.job_id = jp.job_id " +
+                "where p.career >= (?) ");
+
+        long jobGroupId = getPostingListReq.getJobGroupId();
+
+        if (l1 > 0){
+            getPostingListQuery.append("and p.place_1 IN (");
+            for(int i = 0; i < l1; i++){
+                getPostingListQuery.append("?");
+                if (i != l1 - 1)
+                    getPostingListQuery.append(", ");
+            }
+            getPostingListQuery.append(") ");
+        }
+        if (l2 > 0){
+            getPostingListQuery.append("and p.place_2 IN (");
+            for(int i = 0; i < l2; i++){
+                getPostingListQuery.append("?");
+                if (i != l2 - 1)
+                    getPostingListQuery.append(", ");
+            }
+            getPostingListQuery.append(") ");
+        }
+        if (ut > 0){
+            getPostingListQuery.append("and ta.tag_id IN (");
+            for(int i = 0; i < ut; i++){
+                getPostingListQuery.append("?");
+                if (i != ut - 1)
+                    getPostingListQuery.append(", ");
+            }
+            getPostingListQuery.append(") ");
+        }
+        if (st > 0){
+            getPostingListQuery.append("and sp.skill_id IN (");
+            for(int i = 0; i < st; i++){
+                getPostingListQuery.append("?");
+                if (i != st - 1)
+                    getPostingListQuery.append(", ");
+            }
+            getPostingListQuery.append(") ");
+        }
+        if (j > 0){
+            getPostingListQuery.append("and jp.job_id IN (");
+            for(int i = 0; i < j; i++){
+                getPostingListQuery.append("?");
+                if (i != j - 1)
+                    getPostingListQuery.append(", ");
+            }
+            getPostingListQuery.append(") ");
+        }
+
+        if (jobGroupId != 0){
+            getPostingListQuery.append("and j.job_group_id = (?) ");
+            getPostingListParams.add(jobGroupId);
+        }
+        getPostingListQuery.append("group by posting_id");
+        String getPostingQuery = getPostingListQuery.toString();
+        System.out.println(getPostingQuery);
+
+        int size = getPostingListParams.size();
+        Object params[] = getPostingListParams.toArray(new Object[size]);
+        System.out.println(getPostingQuery.toString());
+        System.out.println(Arrays.toString(params));
+        return this.jdbcTemplate.query(getPostingQuery,
+                (rs, rowNum)-> new GetPostingListRes(
+                        rs.getLong("posting_id"),
+                        rs.getString("picture"),
+                        rs.getString("title"),
+                        rs.getString("company_name"),
+                        rs.getString("place_1"),
+                        rs.getLong("recommend_money") + rs.getLong("apply_money")
+                ), params);
+    }
 }
