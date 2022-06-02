@@ -50,6 +50,7 @@ public class ResumeService {
             List<GetResumeListRes> getResumeListRes = resumeDao.getResumeList(userId);
             return getResumeListRes;
         } catch (Exception e) {
+            System.out.println(e.getCause());
             throw new BaseException(DATABASE_ERROR);
         }
     }

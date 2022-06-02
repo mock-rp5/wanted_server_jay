@@ -37,7 +37,7 @@ public class ResumeDao {
 
     //이력서 목록 조회
     public List<GetResumeListRes> getResumeList(long userId){
-        String getResumeListQuery = "select resume_id, DATE_FORMAT(updated_at, '%Y.%m.%d') as updated_at, resume_status, resume_title from resume where user_id = ?";
+        String getResumeListQuery = "select resume_id, DATE_FORMAT(updated_at, '%Y.%m.%d') as updated_at, resume_status, resume_title from resume where user_id = ? and status = 'ACTIVE'";
         return this.jdbcTemplate.query(getResumeListQuery,
                 (rs, rowNum) -> new GetResumeListRes(
                         rs.getLong("resume_id"),
