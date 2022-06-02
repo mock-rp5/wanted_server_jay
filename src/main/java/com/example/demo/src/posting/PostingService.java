@@ -169,5 +169,16 @@ public class PostingService {
         }
     }
 
+    //지원 리스트
+    public List<GetApplyRes> getApply(long userId) throws BaseException {
+        try {
+            List<GetApplyRes> getApplyRes = postingDao.getApply(userId);
+            return getApplyRes;
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 
 }

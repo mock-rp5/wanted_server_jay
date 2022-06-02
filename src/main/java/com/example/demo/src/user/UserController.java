@@ -1,5 +1,6 @@
 package com.example.demo.src.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.graalvm.compiler.nodes.calc.IntegerDivRemNode;
 import org.slf4j.Logger;
@@ -9,8 +10,14 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +45,6 @@ public class UserController {
     @Autowired
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
 
-
     public UserController(UserProvider userProvider, UserService userService, JwtService jwtService) {
         this.userProvider = userProvider;
         this.userService = userService;
@@ -46,6 +52,42 @@ public class UserController {
     }
 
     // ******************************************************************************
+
+//    @ResponseBody
+//    @PostMapping("sms")
+//    public BaseResponse<SendSmsResponse> sendSMS(@RequestBody GetMessageReq getMessageReq) throws UnsupportedEncodingException, ParseException, NoSuchAlgorithmException, URISyntaxException, InvalidKeyException, JsonProcessingException {
+//
+//        String recipient=userProvider.findUserPhone(getMessageReq.getUser_id());
+//        SendSmsResponse sendSmsResponse=userService.sendSms(recipient,getMessageReq.getContent());
+//        return new BaseResponse<>(sendSmsResponse);
+//    }
+    @ResponseBody
+    @PostMapping("sms")
+    public BaseResponse<SmsResponse> sms(@RequestBody GetMessageReq getMessageReq) throws NoSuchAlgorithmException, URISyntaxException, UnsupportedEncodingException, InvalidKeyException, JsonProcessingException {
+        try {
+            String recipient=userProvider.findUserPhone(getMessageReq.getUserId());
+            int authNo = (int)(Math.random() * (99999 - 10000 + 1)) + 10000;
+            String pass = "인증번호 " + authNo;
+            userService.savePass(getMessageReq.getUserId(), authNo);
+            SmsResponse data = userService.sendSms(recipient, pass);
+            return new BaseResponse<>(data);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
+    //sms validation
+    @ResponseBody
+    @PostMapping("sms/validation")
+    public BaseResponse<Integer> validate(@RequestBody PostValidationReq postValidationReq){
+        try {
+            int result = userService.validate(postValidationReq);
+            return new BaseResponse<>(result);
+        } catch (BaseException e) {
+            System.out.println(e.getStatus());
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 
     /**
      * 회원가입 API
@@ -251,6 +293,27 @@ public class UserController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /**
+     * 유저 마이페이지
+     * [Get] /{userId}/mypage
+     */
+    @ResponseBody
+    @GetMapping("{userId}/mypage")
+    public BaseResponse<GetMyPageRes> getMypage(@PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetMyPageRes getMyPageRes= userService.getMyPage(userId);
+            return new BaseResponse<>(getMyPageRes);
+        } catch (BaseException e) {
+            System.out.println(e.getStatus());
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
+
 
     /**
      * 카카오

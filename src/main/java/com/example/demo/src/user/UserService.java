@@ -3,26 +3,55 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
+import com.example.demo.src.posting.PostingDao;
+import com.example.demo.src.posting.model.GetBookMarkPostingRes;
+import com.example.demo.src.posting.model.GetlikePostingRes;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.DefaultResponseErrorHandler;
+import org.springframework.web.client.RestTemplate;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.sql.DataSource;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import org.springframework.http.HttpHeaders;
+
+import java.nio.charset.StandardCharsets;
+//import java.security.InvalidKeyException;
+//import java.security.NoSuchAlgorithmException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+//import java.security.Timestamp;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.config.BaseResponseStatus.MODIFY_FAIL_USERIMG;
@@ -42,16 +71,17 @@ public class UserService {
     // *********************** 동작에 있어 필요한 요소들을 불러옵니다. *************************
     private final UserDao userDao;
     private final UserProvider userProvider;
+    private final PostingDao postingDao;
     private final JwtService jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
 
-
     @Autowired //readme 참고
-    public UserService(UserDao userDao, UserProvider userProvider, JwtService jwtService) {
+    public UserService(UserDao userDao, UserProvider userProvider, PostingDao postingDao, JwtService jwtService) {
         this.userDao = userDao;
         this.userProvider = userProvider;
-        this.jwtService = jwtService; // JWT부분은 7주차에 다루므로 모르셔도 됩니다!
-
+        this.postingDao = postingDao;
+        this.jwtService = jwtService;
     }
+
     // ******************************************************************************
     // 회원가입(POST)
     public PostUserRes createUser(PostUserReq postUserReq) throws BaseException {
@@ -120,6 +150,127 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    //유저 마이페이지
+    public GetMyPageRes getMyPage(long userId) throws  BaseException {
+        try {
+
+            List<GetlikePostingRes> likes = postingDao.getLikePostings(userId);
+
+            List<GetBookMarkPostingRes> bookMarks = postingDao.getBookMarkPostings(userId);
+
+            GetUserProfileRes user = userDao.getUserProfile(userId);
+            long applyNum = userDao.getApplyNum(userId);
+
+            return new GetMyPageRes(user.getUserId(), user.getUserName(), user.getPicture(), user.getEmail(), user.getPhone(),
+                    applyNum, bookMarks, likes);
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+    //인증번호 저장
+    public void savePass(long userId, int authNo) throws  BaseException{
+        try {
+            int result = userDao.savePass(userId, authNo);
+            if (result == 0){
+                throw new BaseException(SAVE_FAIL_AUTHNUM);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //인증번호 검사
+    public int validate(PostValidationReq postValidationReq) throws BaseException{
+        try {
+            int result = userDao.checkNum(postValidationReq);
+            if (result == postValidationReq.getAuthNum()){
+                userDao.validate(postValidationReq);
+                return 1;
+            }
+            return 0;
+        } catch (Exception e) {
+            System.out.println(e.getCause());
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    //SMS
+    @Value("${sms.serviceId}")
+    private String serviceId;
+    @Value("${sms.accessKey}")
+    private String accessKey;
+    @Value("${sms.secretKey}")
+    private String secretKey;
+    @Value("${sms.phone}")
+    private String phone;
+
+    public SmsResponse sendSms(String recipientPhoneNumber, String content) throws JsonProcessingException, UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException, URISyntaxException {
+        Long time = System.currentTimeMillis();
+        List<MessageDto> messages = new ArrayList<>();
+        messages.add(new MessageDto(recipientPhoneNumber, content));
+
+        SmsRequest smsRequest = new SmsRequest("SMS", "COMM", "82", phone, "내용", messages);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonBody = objectMapper.writeValueAsString(smsRequest);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("x-ncp-apigw-timestamp", time.toString());
+        headers.set("x-ncp-iam-access-key", this.accessKey);
+        String sig = makeSignature(time); //암호화
+        headers.set("x-ncp-apigw-signature-v2", sig);
+
+        HttpEntity<String> body = new HttpEntity<>(jsonBody,headers);
+
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+//        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+//            public boolean hasError(ClientHttpResponse response) throws IOException {
+//                HttpStatus statusCode = response.getStatusCode();
+//                return statusCode.series() == HttpStatus.Series.SERVER_ERROR;
+//            }
+//        });
+
+        SmsResponse smsResponse = restTemplate.postForObject(new URI("https://sens.apigw.ntruss.com/sms/v2/services/"+this.serviceId+"/messages"), body, SmsResponse.class);
+
+        return smsResponse;
+
+    }
+    public String makeSignature(Long time) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+
+        String space = " ";
+        String newLine = "\n";
+        String method = "POST";
+        String url = "/sms/v2/services/"+ this.serviceId+"/messages";
+        String timestamp = time.toString();
+        String accessKey = this.accessKey;
+        String secretKey = this.secretKey;
+
+        String message = new StringBuilder()
+                .append(method)
+                .append(space)
+                .append(url)
+                .append(newLine)
+                .append(timestamp)
+                .append(newLine)
+                .append(accessKey)
+                .toString();
+
+        SecretKeySpec signingKey = new SecretKeySpec(secretKey.getBytes("UTF-8"), "HmacSHA256");
+        Mac mac = Mac.getInstance("HmacSHA256");
+        mac.init(signingKey);
+
+        byte[] rawHmac = mac.doFinal(message.getBytes("UTF-8"));
+        String encodeBase64String = Base64.encodeBase64String(rawHmac);
+
+        return encodeBase64String;
+    }
+
 
     //kakao 로그인
     public String getKaKaoAccessToken(String code){

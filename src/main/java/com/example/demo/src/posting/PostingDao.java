@@ -213,6 +213,28 @@ public class PostingDao {
                         rs.getLong("recommend_money") + rs.getLong("apply_money")
                 ), getLikePostingParams);
     }
+    // 지원 리스트
+    public List<GetApplyRes> getApply(long userId){
+        String getApplyQuery = "select a.apply_id, a.posting_id, p.company_id, c.company_name, p.title, r.resume_title, r.resume_id " +
+                "from apply as a " +
+                "inner join posting as p " +
+                "on p.posting_id = a.posting_id " +
+                "inner join company as c " +
+                "on c.company_id = p.company_id " +
+                "inner join resume as r " +
+                "on r.resume_id = a.resume_id " +
+                "where a.user_id = ?";
+        return this.jdbcTemplate.query(getApplyQuery,
+                (rs, rowNum) -> new GetApplyRes(
+                        rs.getLong("apply_id"),
+                        rs.getLong("posting_id"),
+                        rs.getLong("company_id"),
+                        rs.getLong("resume_id"),
+                        rs.getString("company_name"),
+                        rs.getString("title"),
+                        rs.getString("resume_title")
+                ), userId);
+    }
 
 
     //채용공고 리스트 조회

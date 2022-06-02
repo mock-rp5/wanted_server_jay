@@ -77,6 +77,7 @@ public enum BaseResponseStatus {
     DELETE_FAIL_BOOKMARK(false, 4034, "북마크 취소 실패"),
     CREATE_FAIL_LIKE(false, 4035, "좋아요 실패"),
     DELETE_FAIL_LIKE(false, 4036, "좋아요 취소 실패"),
+    SAVE_FAIL_AUTHNUM(false, 4037, "인증번호 저장 실패"),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");

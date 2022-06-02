@@ -233,4 +233,22 @@ public class PostingController {
             return new BaseResponse<>(e.getStatus());
         }
     }
+
+    /**
+     * 지원 현황 조회
+     * [Get] {userId}/apply
+     */
+    @ResponseBody
+    @GetMapping("{userId}/apply")
+    public BaseResponse<List<GetApplyRes>> getApply(@PathVariable long userId){
+        try {
+            long userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt)
+                return new BaseResponse<>(INVALID_USER_JWT);
+            List<GetApplyRes> getApplyRes = postingService.getApply(userId);
+            return new BaseResponse<>(getApplyRes);
+        } catch (BaseException e) {
+            return new BaseResponse<>(e.getStatus());
+        }
+    }
 }

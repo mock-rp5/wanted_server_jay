@@ -12,3 +12,8 @@ spring:
     username: admin # 만약 따로 설정하지 않으셨다면 기본값은 admin 입니다
     password: dbwo7827 # 비밀번호를 입력해주세요!
     driver-class-name: com.mysql.cj.jdbc.Driver
+sms:
+  serviceId: ncp:sms:kr:286886860512:wanted_sms
+  accessKey: 9xwz8grRtk7N3UA2depL
+  secretKey: b7r5DjpOSALvw9AY6e4LLhGKG4DhQcuulzo4m8VA
+  phone: "01040357827"

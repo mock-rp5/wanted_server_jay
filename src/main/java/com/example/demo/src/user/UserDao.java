@@ -77,6 +77,13 @@ public class UserDao {
                 checkEmailParams); // checkEmailQuery, checkEmailParams를 통해 가져온 값(intgud)을 반환한다. -> 쿼리문의 결과(존재하지 않음(False,0),존재함(True, 1))를 int형(0,1)으로 반환됩니다.
     }
 
+    //sms
+    public String findUserPhone(long user_id) {
+        String findUserPhoneQuery="select phone from user where user_id=?";
+        return this.jdbcTemplate.queryForObject(findUserPhoneQuery,
+                (rs,rowNum)->rs.getString(1),user_id);
+    }
+
     //추가
     // 유저 status 확인 (추가)
     public String checkStatus(long userId){
@@ -158,6 +165,28 @@ public class UserDao {
                 getUserParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
     }
 
+    // 해당 user_id를 갖는 유저조회
+    public GetUserProfileRes getUserProfile(long userId) {
+        String getUserQuery = "select * from user where user_id = ?"; // 해당 user_id를 만족하는 유저를 조회하는 쿼리문
+        long getUserParams = userId;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> new GetUserProfileRes(
+                        rs.getInt("user_id"),
+                        rs.getString("name"),
+                        rs.getString("profile_img"),
+                        rs.getString("email"),
+                        rs.getString("phone")), // RowMapper(위의 링크 참조): 원하는 결과값 형태로 받기
+                getUserParams); // 한 개의 회원정보를 얻기 위한 jdbcTemplate 함수(Query, 객체 매핑 정보, Params)의 결과 반환
+    }
+
+    //지원 개수 확인
+    public long getApplyNum(long userId){
+        String getApplyNumQuery = "select count(user_id) as apply_num " +
+                "from apply " +
+                "where user_id = ?";
+        return this.jdbcTemplate.queryForObject(getApplyNumQuery, long.class, userId);
+    }
+
     // 회원 이미지 변경
     public int modifyUserImg(PatchUserImgReq patchUserImgReq){
         String modifyUserImgQuery = "update user set profile_img = ? where user_id = ?";
@@ -183,5 +212,25 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(getUserIdByEmailQuery,
                 int.class,
                 getUserIdByEmailParams);
+    }
+
+    //인증번호 저장
+    public int savePass(long userId, int authNo){
+        String savePassQuery = "update user set auth_num = ? where user_id = ?";
+        Object[] savePassParam = new Object[]{authNo, userId};
+        return this.jdbcTemplate.update(savePassQuery, savePassParam);
+    }
+
+    //인증번호 조회
+    public int checkNum(PostValidationReq postValidationReq){
+        String checkNumQuery = "select auth_num from user where user_id = ?";
+        return this.jdbcTemplate.queryForObject(checkNumQuery, int.class, postValidationReq.getUserId());
+    }
+
+    //인증 처리
+    public int validate(PostValidationReq postValidationReq){
+        String validateQuery = "update user set auth_status = ? where user_id = ?";
+        Object[] validateParam = new Object[]{"Y", postValidationReq.getUserId()};
+        return this.jdbcTemplate.update(validateQuery, validateParam);
     }
 }

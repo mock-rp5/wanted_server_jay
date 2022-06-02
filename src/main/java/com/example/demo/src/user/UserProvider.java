@@ -63,6 +63,10 @@ public class UserProvider {
             throw new BaseException(FAILED_TO_LOGIN);
         }
     }
+    //sms
+    public String findUserPhone(long user_id) {
+        return userDao.findUserPhone(user_id);
+    }
 
     // 해당 이메일이 이미 User Table에 존재하는지 확인
     public int checkEmail(String email) throws BaseException {
@@ -74,9 +78,6 @@ public class UserProvider {
         }
     }
 
-
-
-
     // User들의 정보를 조회
     public List<GetUserRes> getUsers() throws BaseException {
         try {
@@ -86,17 +87,6 @@ public class UserProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
-    // 해당 nickname을 갖는 User들의 정보 조회
-    public List<GetUserRes> getUsersByNickname(String nickname) throws BaseException {
-        try {
-            List<GetUserRes> getUsersRes = userDao.getUsersByNickname(nickname);
-            return getUsersRes;
-        } catch (Exception exception) {
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
 
     // 해당 userId를 갖는 User의 정보 조회
     public GetUserRes getUser(long userId) throws BaseException {
