@@ -291,7 +291,7 @@ public class UserService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=5bda4bb34c2e9a55c97759e974ba0dcb"); // TODO REST_API_KEY 입력
-            sb.append("&redirect_uri=http://localhost:9000/app/users/kakao"); // TODO 인가코드 받은 redirect_uri 입력
+            sb.append("&redirect_uri=https://prod.want-ed.shop/app/users/kakao"); // TODO 인가코드 받은 redirect_uri 입력
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
