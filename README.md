@@ -23,7 +23,7 @@ https://www.erdcloud.com/d/qMffhXfDwRnC4JEwo
 ## 3.API 명세서
 https://docs.google.com/spreadsheets/d/1TxzPsIBu0F-TqPO4o3nWENj8gSE6rAPDWN0KDxwPrfo/edit?usp=sharing
 - 원티드의 주요 비즈니스 로직 구현
-- 유저, 이력서, 채용공고, 필터링 관련 API 60개 구현
+- 유저, 이력서, 채용공고 관련 API 60개 구현
 - 네이버 SENS 문자 API 연동
 - 카카오 소셜 로그인 API 연동
   
