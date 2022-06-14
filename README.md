@@ -4,7 +4,7 @@ https://prod.want-ed.shop/
 - 이 Repository는 웹서비스의 REST API를 구현한 저장소입니다.
 
 ## 1.기술 스택
-[그림]
+![프로젝트구조 drawio](https://user-images.githubusercontent.com/51395712/173477652-4ea9389f-eb9d-46f8-9c83-026a1cd20cfb.png)
 - Server 
   - Spring Boot 2.4
   - JDBC template
