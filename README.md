@@ -1,4 +1,5 @@
 # wanted_server_jay
+https://prod.want-ed.shop/
 - 구인구직 서비스인 원티드의 비즈니스로직을 참고해 구현한 웹서비스 입니다.
 - 이 Repository는 웹서비스의 REST API를 구현한 저장소입니다.
 
