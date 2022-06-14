@@ -6,8 +6,8 @@
 [그림]
 - Server 
   - Spring Boot 2.4
-  - MySQL
   - JDBC template
+  - MySQL
 - Client
   - React
 - Infra
